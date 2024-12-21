@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from './roles/roles.module';
 import { CategoriasModule } from './categorias/categorias.module';
 import { ProveedoresModule } from './proveedores/proveedores.module';
+import { ClientesModule } from './clientes/clientes.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -22,7 +23,8 @@ import { ProveedoresModule } from './proveedores/proveedores.module';
     }),
     RolesModule,
     CategoriasModule,
-    ProveedoresModule
+    ProveedoresModule,
+    ClientesModule
   ],
   controllers: [AppController],
   providers: [AppService],
