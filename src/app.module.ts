@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from './roles/roles.module';
 import { CategoriasModule } from './categorias/categorias.module';
+import { ProveedoresModule } from './proveedores/proveedores.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -20,7 +21,8 @@ import { CategoriasModule } from './categorias/categorias.module';
       autoLoadEntities: true,
     }),
     RolesModule,
-    CategoriasModule
+    CategoriasModule,
+    ProveedoresModule
   ],
   controllers: [AppController],
   providers: [AppService],
