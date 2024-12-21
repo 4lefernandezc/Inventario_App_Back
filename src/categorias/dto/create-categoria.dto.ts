@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreateCategoriaDto {
   @ApiProperty()
@@ -20,5 +20,6 @@ export class CreateCategoriaDto {
 
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo activo no debe ser vacío' })
+  @IsBoolean({ message: 'El campo activo debe ser de tipo booleano' })
   readonly activo: boolean;
 }
