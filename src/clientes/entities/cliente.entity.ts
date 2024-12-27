@@ -37,4 +37,7 @@ export class Cliente {
 
   @UpdateDateColumn({ name: 'fecha_modificacion' })
   fechaModificacion: Date;
+
+  // @OneToMany(() => Venta, (venta) => venta.cliente)
+  // ventas: Venta[];
 }

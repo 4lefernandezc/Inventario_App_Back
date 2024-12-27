@@ -22,4 +22,8 @@ export class Rol {
 
   @UpdateDateColumn({ name: 'fecha_modificacion' })
   fechaModificacion: Date;
+
+  // Una rol puede estar en varios usuarios
+  // @OneToMany(() => User, (user) => user.rol)
+  // users: User[];
 }
