@@ -16,17 +16,15 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('API Comercial Franco')
-    .setDescription(
-      'API Rest Sistema de Ventas e Inventario Comercial Franco',
-    )
+    .setDescription('API Rest Sistema de Ventas e Inventario Comercial Franco')
     .setVersion('1.0')
-    // .addTag('') // Agregar etiquetas
-    // .addBearerAuth({
-    //   type: 'http',
-    //   scheme: 'bearer',
-    //   bearerFormat: 'JWT',
-    //   in: 'header',
-    // })
+    .addTag('Categorias, Clientes, Proveedores, Roles, Usuarios, Auth') // Agregar etiquetas
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+    })
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('apidoc', app, document);

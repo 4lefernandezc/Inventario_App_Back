@@ -1,35 +1,45 @@
-// import { Compra } from 'src/compra/entities/compra.entity';
-// import { Venta } from 'src/ventas/entities/venta.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
-  OneToMany,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt'; // para login
-// import { Empleado } from 'src/empleados/entities/empleado.entity';
+import * as bcrypt from 'bcrypt';
+import { Rol } from 'src/roles/entities/rol.entity';
 
 @Entity('usuarios')
 export class Usuario {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, unique: true })
   usuario: string;
 
-  @Column('varchar', { length: 250, select: false })
+  @Column('varchar', { length: 100 })
+  nombre: string;
+
+  @Column('varchar', { length: 100 })
+  apellido: string;
+
+  @Column('varchar', { length: 255 })
+  correo: string;
+
+  @Column('varchar', { length: 255, select: false })
   clave: string;
 
-  @Column('varchar', { length: 30 })
-  rol: string;
+  @Column('boolean', { default: true })
+  estado: boolean;
 
-  @Column('boolean')
-  premium: boolean;
+  @Column({name: 'ultimo_login', type: 'date'})
+  ultimoLogin: Date;
+
+  @Column('number', { name: 'rol_id' })
+  rolId: number;
 
   @CreateDateColumn({ name: 'fecha_creacion' })
   fechaCreacion: Date;
@@ -37,25 +47,21 @@ export class Usuario {
   @UpdateDateColumn({ name: 'fecha_modificacion' })
   fechaModificacion: Date;
 
-  @DeleteDateColumn({ name: 'fecha_elimanacion', select: false })
-  fechaEliminacion: Date;
+  @ManyToOne(() => Rol, (rol) => rol.usuarios, { eager: true, nullable: false })
+  @JoinColumn({ name: 'rol_id' })
+  rol: Rol;
 
-  // @OneToMany(() => Compra, (compra) => compra.usuario)
-  // compras: Compra[];
+  // @ManyToOne(() => Sucursal, (sucursal) => sucursal.usuarios, { eager: true, nullable: false })
+  // @JoinColumn({ name: 'rol_id' })
+  // sucursal: Sucursal;
 
-  // @OneToMany(() => Venta, (venta) => venta.usuarios)
-  // ventas: Venta[];
-
-  // //Este esta listo....
-  // @OneToMany(() => Empleado, (empleado) => empleado.usuarios)
-  // empleados: Empleado[];
-
-  //para login
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {
-    const salt = await bcrypt.genSalt();
-    this.clave = await bcrypt.hash(this.clave, salt);
+    if (this.clave) {
+      const salt = await bcrypt.genSalt();
+      this.clave = await bcrypt.hash(this.clave, salt);
+    }
   }
 
   async validatePassword(plainPassword: string): Promise<boolean> {

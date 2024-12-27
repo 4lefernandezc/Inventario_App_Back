@@ -2,13 +2,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBooleanString,
   IsDefined,
+  IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsString,
   MaxLength,
 } from 'class-validator';
 
 export class CreateUsuarioDto {
-  @ApiProperty() //Swagger
+  @ApiProperty()
   @IsNotEmpty({ message: 'El campo usuario es obligatorio' })
   @IsString({ message: 'El campo usuario debe ser tipo cadena' })
   @MaxLength(20, {
@@ -16,16 +18,38 @@ export class CreateUsuarioDto {
   })
   readonly usuario: string;
 
-  @ApiProperty() //Swagger
-  @IsNotEmpty({ message: 'El campo rol es obligatorio' })
-  @IsString({ message: 'El campo rol debe ser tipo cadena' })
-  @MaxLength(30, {
-    message: 'El campo rol no debe ser mayor a 30 caracteres',
+  @ApiProperty()
+  @IsNotEmpty({ message: 'El campo nombre es obligatorio' })
+  @IsString({ message: 'El campo nombre debe ser tipo cadena' })
+  @MaxLength(100, {
+    message: 'El campo nombre no debe ser mayor a 100 caracteres',
   })
-  readonly rol: string;
+  readonly nombre: string;
 
   @ApiProperty()
-  @IsDefined({ message: 'El campo premium debe estar definido' })
-  @IsBooleanString({ message: 'El campo premium debe ser de tipo lógico' })
-  readonly premium: boolean;
+  @IsNotEmpty({ message: 'El campo apellido es obligatorio' })
+  @IsString({ message: 'El campo apellido debe ser tipo cadena' })
+  @MaxLength(100, {
+    message: 'El campo apellido no debe ser mayor a 100 caracteres',
+  })
+  readonly apellido: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'El campo correo es obligatorio' })
+  @IsString({ message: 'El campo correo debe ser tipo cadena' })
+  @IsEmail({}, { message: 'El campo correo debe ser un correo electrónico' })
+  @MaxLength(255, {
+    message: 'El campo correo no debe ser mayor a 255 caracteres',
+  })
+  readonly correo: string;
+
+  @ApiProperty()
+  @IsDefined({ message: 'El campo estado debe estar definido' })
+  readonly estado: boolean;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'El campo rol_id es obligatorio' })
+  @IsDefined({ message: 'El campo rol_id debe estar definido' })
+  @IsNumber({}, { message: 'El campo rol_id debe ser de tipo numérico' })
+  readonly rolId: number;
 }
