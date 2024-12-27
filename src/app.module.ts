@@ -7,6 +7,8 @@ import { RolesModule } from './roles/roles.module';
 import { CategoriasModule } from './categorias/categorias.module';
 import { ProveedoresModule } from './proveedores/proveedores.module';
 import { ClientesModule } from './clientes/clientes.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -24,7 +26,9 @@ import { ClientesModule } from './clientes/clientes.module';
     RolesModule,
     CategoriasModule,
     ProveedoresModule,
-    ClientesModule
+    ClientesModule,
+    UsuariosModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Entity('roles')
 export class Rol {
@@ -14,16 +16,12 @@ export class Rol {
   @Column('varchar', { length: 50 })
   nombre: string;
 
-  @Column('varchar', { length: 255 })
-  descripcion: string;
-
   @CreateDateColumn({ name: 'fecha_creacion' })
   fechaCreacion: Date;
 
   @UpdateDateColumn({ name: 'fecha_modificacion' })
   fechaModificacion: Date;
 
-  // Una rol puede estar en varios usuarios
-  // @OneToMany(() => User, (user) => user.rol)
-  // users: User[];
+  @OneToMany(() => Usuario, (usuario) => usuario.rol)
+  usuarios: Usuario[];
 }
