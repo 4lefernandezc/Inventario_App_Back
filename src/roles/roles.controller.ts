@@ -1,8 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRolDto } from './dto/create-rol.dto';
 import { UpdateRolDto } from './dto/update-rol.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
+@ApiTags('Roles') // Swagger
+@ApiBearerAuth() //lo de documentacion para loguear
+@UseGuards(JwtAuthGuard) //lo de documentacion para loguear
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}

@@ -1,8 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { SucursalesService } from './sucursales.service';
 import { CreateSucursalDto } from './dto/create-sucursal.dto';
 import { UpdateSucursalDto } from './dto/update-sucursal.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
+@ApiTags('Sucursales') // Swagger
+@ApiBearerAuth() //lo de documentacion para loguear
+@UseGuards(JwtAuthGuard) //lo de documentacion para loguear
 @Controller('sucursales')
 export class SucursalesController {
   constructor(private readonly sucursalesService: SucursalesService) {}
