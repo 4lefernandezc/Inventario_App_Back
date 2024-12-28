@@ -9,6 +9,7 @@ import { ProveedoresModule } from './proveedores/proveedores.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
+import { SucursalesModule } from './sucursales/sucursales.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -29,6 +30,7 @@ import { AuthModule } from './auth/auth.module';
     ClientesModule,
     UsuariosModule,
     AuthModule,
+    SucursalesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
