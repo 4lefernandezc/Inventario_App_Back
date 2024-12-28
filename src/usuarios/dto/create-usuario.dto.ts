@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsBooleanString,
   IsDefined,
   IsEmail,
@@ -44,12 +45,19 @@ export class CreateUsuarioDto {
   readonly correo: string;
 
   @ApiProperty()
-  @IsDefined({ message: 'El campo estado debe estar definido' })
-  readonly estado: boolean;
+  @IsNotEmpty({ message: 'El campo activo no debe ser vacío' })
+  @IsBoolean({ message: 'El campo activo debe ser de tipo booleano' })
+  readonly activo: boolean;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo rol_id es obligatorio' })
   @IsDefined({ message: 'El campo rol_id debe estar definido' })
   @IsNumber({}, { message: 'El campo rol_id debe ser de tipo numérico' })
   readonly rolId: number;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'El campo sucursal_id es obligatorio' })
+  @IsDefined({ message: 'El campo sucursal_id debe estar definido' })
+  @IsNumber({}, { message: 'El campo sucursal_id debe ser de tipo numérico' })
+  readonly sucursalId: number;
 }

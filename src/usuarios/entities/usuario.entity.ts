@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Rol } from 'src/roles/entities/rol.entity';
+import { Sucursal } from 'src/sucursales/entities/sucursal.entity';
 
 @Entity('usuarios')
 export class Usuario {
@@ -33,13 +34,16 @@ export class Usuario {
   clave: string;
 
   @Column('boolean', { default: true })
-  estado: boolean;
+  activo: boolean;
 
   @Column({name: 'ultimo_login', type: 'date'})
   ultimoLogin: Date;
 
   @Column('number', { name: 'rol_id' })
   rolId: number;
+
+  @Column('number', { name: 'sucursal_id' })
+  sucursalId: number;
 
   @CreateDateColumn({ name: 'fecha_creacion' })
   fechaCreacion: Date;
@@ -51,9 +55,9 @@ export class Usuario {
   @JoinColumn({ name: 'rol_id' })
   rol: Rol;
 
-  // @ManyToOne(() => Sucursal, (sucursal) => sucursal.usuarios, { eager: true, nullable: false })
-  // @JoinColumn({ name: 'rol_id' })
-  // sucursal: Sucursal;
+  @ManyToOne(() => Sucursal, (sucursal) => sucursal.usuarios, { eager: true, nullable: false })
+  @JoinColumn({ name: 'sucursal_id' })
+  sucursal: Sucursal;
 
   @BeforeInsert()
   @BeforeUpdate()
