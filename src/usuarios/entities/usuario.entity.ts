@@ -36,7 +36,7 @@ export class Usuario {
   @Column('boolean', { default: true })
   activo: boolean;
 
-  @Column({name: 'ultimo_login', type: 'date'})
+  @Column({ name: 'ultimo_login', type: 'date' })
   ultimoLogin: Date;
 
   @Column('number', { name: 'rol_id' })
@@ -55,14 +55,18 @@ export class Usuario {
   @JoinColumn({ name: 'rol_id' })
   rol: Rol;
 
-  @ManyToOne(() => Sucursal, (sucursal) => sucursal.usuarios, { eager: true, nullable: false })
+  @ManyToOne(() => Sucursal, (sucursal) => sucursal.usuarios, {
+    eager: true,
+    nullable: false,
+  })
   @JoinColumn({ name: 'sucursal_id' })
   sucursal: Sucursal;
 
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {
-    if (this.clave) {
+    // Solo encripta la clave si es nueva o no está en formato bcrypt
+    if (this.clave && !this.clave.startsWith('$2b$')) {
       const salt = await bcrypt.genSalt();
       this.clave = await bcrypt.hash(this.clave, salt);
     }

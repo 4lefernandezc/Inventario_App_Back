@@ -43,10 +43,10 @@ export class UsuariosService {
       apellido: apellido.trim(),
       correo: correo.trim(),
       activo,
-      clave: process.env.DEFAULT_PASSWORD,
+      clave: process.env.DEFAULT_PASSWORD, // Clave por defecto
       rolId,
       sucursalId,
-      ultimoLogin: new Date()
+      ultimoLogin: new Date(),
     });
 
     return this.usuariosRepository.save(nuevoUsuario);
@@ -62,16 +62,27 @@ export class UsuariosService {
     return usuario;
   }
 
-  async update(id: number, updateUsuarioDto: UpdateUsuarioDto): Promise<{ message: string, usuario: Usuario }> {
+  async update(id: number, updateUsuarioDto: UpdateUsuarioDto): Promise<{ message: string; usuario: Usuario }> {
     const usuario = await this.findOne(id);
-    if (updateUsuarioDto.rolId && updateUsuarioDto.sucursalId ) {
+
+    // Verifica si se incluye la clave y sobrescribe solo si es proporcionada
+    if (updateUsuarioDto.clave) {
+      usuario.clave = updateUsuarioDto.clave;
+    }
+
+    // Verifica rol y sucursal si fueron proporcionados
+    if (updateUsuarioDto.rolId) {
       const rol = await this.rolesRepository.findOneBy({ id: updateUsuarioDto.rolId });
-      const sucursal = await this.sucursalesRepository.findOneBy({ id: updateUsuarioDto.sucursalId });
       if (!rol) throw new NotFoundException('El rol especificado no existe');
       usuario.rol = rol;
+    }
+
+    if (updateUsuarioDto.sucursalId) {
+      const sucursal = await this.sucursalesRepository.findOneBy({ id: updateUsuarioDto.sucursalId });
       if (!sucursal) throw new NotFoundException('La sucursal especificada no existe');
       usuario.sucursal = sucursal;
     }
+
     Object.assign(usuario, updateUsuarioDto);
     const updatedUsuario = await this.usuariosRepository.save(usuario);
     return { message: 'Usuario actualizado correctamente', usuario: updatedUsuario };
@@ -86,7 +97,7 @@ export class UsuariosService {
   async validate(usuario: string, clave: string): Promise<Usuario> {
     const usuarioOk = await this.usuariosRepository.findOne({
       where: { usuario },
-      select: ['id', 'usuario', 'nombre', 'apellido', 'correo', 'clave', 'activo', 'rolId', 'sucursalId', 'ultimoLogin']
+      select: ['id', 'usuario', 'nombre', 'clave', 'activo', 'ultimoLogin'],
     });
 
     if (!usuarioOk) throw new NotFoundException('Usuario inexistente');
@@ -98,6 +109,7 @@ export class UsuariosService {
     usuarioOk.ultimoLogin = new Date();
     await this.usuariosRepository.save(usuarioOk);
 
+    // Elimina la clave antes de devolver el usuario
     delete usuarioOk.clave;
     return usuarioOk;
   }

@@ -14,7 +14,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getHandler(),
       context.getClass(),
     ]);
-    console.log('Ruta pública:', isPublic);
+    // console.log('Ruta pública:', isPublic);
     if (isPublic) {
       console.log('Ruta pública detectada, no se valida JWT');
       return true;
