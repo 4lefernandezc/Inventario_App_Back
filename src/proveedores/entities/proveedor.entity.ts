@@ -1,7 +1,9 @@
+import { Producto } from 'src/productos/entities/producto.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -34,6 +36,9 @@ export class Proveedor {
 
   @UpdateDateColumn({ name: 'fecha_modificacion' })
   fechaModificacion: Date;
+
+  @OneToMany(() => Producto, (producto) => producto.categoria)
+  productos: Producto[];
 
   // @OneToMany(() => Compra, (compra) => compra.proveedor)
   // compras: Compra[];

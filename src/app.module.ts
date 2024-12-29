@@ -10,6 +10,7 @@ import { ClientesModule } from './clientes/clientes.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
 import { SucursalesModule } from './sucursales/sucursales.module';
+import { ProductosModule } from './productos/productos.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -31,6 +32,7 @@ import { SucursalesModule } from './sucursales/sucursales.module';
     UsuariosModule,
     AuthModule,
     SucursalesModule,
+    ProductosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
