@@ -56,6 +56,14 @@ export class UsuariosService {
     return this.usuariosRepository.find();
   }
 
+  async findByRol(idRol: number): Promise<Usuario[]> {
+    return this.usuariosRepository.find({ where: { rolId: idRol } });
+  }
+
+  async findBySucursal(idSucursal: number): Promise<Usuario[]> {
+    return this.usuariosRepository.find({ where: { sucursalId: idSucursal } });
+  }
+
   async findOne(id: number): Promise<Usuario> {
     const usuario = await this.usuariosRepository.findOneBy({ id });
     if (!usuario) throw new NotFoundException('El usuario no existe');

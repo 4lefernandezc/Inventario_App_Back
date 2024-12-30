@@ -45,6 +45,14 @@ export class CreateUsuarioDto {
   readonly correo: string;
 
   @ApiProperty()
+  @IsNotEmpty({ message: 'El campo clave es obligatorio' })
+  @IsString({ message: 'El campo clave debe ser tipo cadena' })
+  @MaxLength(255, {
+    message: 'El campo clave no debe ser mayor a 255 caracteres',
+  })
+  readonly clave: string;
+
+  @ApiProperty()
   @IsNotEmpty({ message: 'El campo activo no debe ser vacío' })
   @IsBoolean({ message: 'El campo activo debe ser de tipo booleano' })
   readonly activo: boolean;
