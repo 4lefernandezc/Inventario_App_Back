@@ -18,7 +18,7 @@ async function bootstrap() {
     .setTitle('API Comercial Franco')
     .setDescription('API Rest Sistema de Ventas e Inventario Comercial Franco')
     .setVersion('1.0')
-    .addTag('Categorias, Productos, Clientes, Proveedores, Sucursales, Roles, Usuarios, Auth') // Agregar etiquetas
+    .addTag('Categorias, Productos, Clientes, Proveedores, Sucursales, Inventarios-Sucursales, Roles, Usuarios, Auth') // Agregar etiquetas
     .addBearerAuth({
       type: 'http',
       scheme: 'bearer',

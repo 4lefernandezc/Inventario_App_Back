@@ -11,6 +11,7 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
 import { SucursalesModule } from './sucursales/sucursales.module';
 import { ProductosModule } from './productos/productos.module';
+import { InventariosSucursalesModule } from './inventarios_sucursales/inventarios_sucursales.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -33,6 +34,7 @@ import { ProductosModule } from './productos/productos.module';
     AuthModule,
     SucursalesModule,
     ProductosModule,
+    InventariosSucursalesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

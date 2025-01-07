@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { InventarioSucursal } from 'src/inventarios_sucursales/entities/inventario_sucursal.entity';
 
 @Entity('productos')
 export class Producto {
@@ -56,10 +57,12 @@ export class Producto {
   @JoinColumn({ name: 'id_proveedor', referencedColumnName: 'id' })
   proveedor: Proveedor;
 
-//   @OneToMany(() => Detallecompra, (detallecompra) => detallecompra.producto)
-//   detallecompras: Detallecompra[];
+  @OneToMany(() => InventarioSucursal, (inventarioSucursal) => inventarioSucursal.producto)
+  inventarios: InventarioSucursal[];
 
-//   @OneToMany(() => Detalleventa, (detalleventas) => detalleventas.producto)
-//   detalleventas: Detalleventa[];
+  //   @OneToMany(() => Detallecompra, (detallecompra) => detallecompra.producto)
+  //   detallecompras: Detallecompra[];
+
+  //   @OneToMany(() => Detalleventa, (detalleventas) => detalleventas.producto)
+  //   detalleventas: Detalleventa[];
 }
-

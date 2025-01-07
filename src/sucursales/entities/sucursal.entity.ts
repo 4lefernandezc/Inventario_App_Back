@@ -1,3 +1,4 @@
+import { InventarioSucursal } from 'src/inventarios_sucursales/entities/inventario_sucursal.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import {
   Column,
@@ -36,4 +37,7 @@ export class Sucursal {
 
   @OneToMany(() => Usuario, (usuario) => usuario.rol)
   usuarios: Usuario[];
+
+  @OneToMany(() => InventarioSucursal, (inventarios) => inventarios.producto)
+  inventarios: InventarioSucursal[];
 }
