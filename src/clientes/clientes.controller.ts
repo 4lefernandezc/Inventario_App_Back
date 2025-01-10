@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ClientesService } from './clientes.service';
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { QueryClienteDto } from './dto/query-cliente.dto';
 
 @ApiTags('Clientes') // Swagger
 @ApiBearerAuth() //lo de documentacion para loguear
@@ -18,8 +19,8 @@ export class ClientesController {
   }
 
   @Get()
-  findAll() {
-    return this.clientesService.findAll();
+  findAll(@Query() query: QueryClienteDto) {
+    return this.clientesService.findAll(query);
   }
 
   @Get(':id')

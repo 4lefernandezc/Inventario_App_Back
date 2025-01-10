@@ -8,6 +8,7 @@ import { UpdateClienteDto } from './dto/update-cliente.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './entities/cliente.entity';
 import { Repository } from 'typeorm';
+import { QueryClienteDto } from './dto/query-cliente.dto';
 
 @Injectable()
 export class ClientesService {
@@ -38,8 +39,54 @@ export class ClientesService {
     return this.clientesRepository.save(cliente);
   }
 
-  async findAll(): Promise<Cliente[]> {
-    return this.clientesRepository.find();
+  async findAll(q: QueryClienteDto){
+    const { page, limit } = q;
+    const query = this.clientesRepository.createQueryBuilder('clientes').select([
+        'clientes.id',
+        'clientes.documento',
+        'clientes.tipoDocumento',
+        'clientes.nombre',
+        'clientes.direccion',
+        'clientes.telefono',
+        'clientes.correo',
+        'clientes.activo',
+        'clientes.fechaCreacion',
+        'clientes.fechaModificacion',
+      ])
+
+    if (q.nombre) {
+      query.andWhere('clientes.nombre ILIKE :nombre', {
+        nombre: `%${q.nombre}%`,
+      });
+    }
+
+    if (q.activo !== undefined) {
+      query.andWhere('clientes.activo = :activo', {
+        activo: q.activo,
+      });
+    }
+
+    if (q.documento) {
+      query.andWhere('clientes.documento ILIKE :documento', {
+        documento: `%${q.documento}%`,
+      });
+    }
+
+    if (q.sidx) {
+      query.orderBy(`clientes.id`, q.sord);
+    }
+
+    const [result, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: result,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: number): Promise<Cliente> {
