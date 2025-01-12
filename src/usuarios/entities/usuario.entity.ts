@@ -27,8 +27,8 @@ export class Usuario {
   @Column('varchar', { length: 100 })
   apellido: string;
 
-  @Column('varchar', { length: 255 })
-  correo: string;
+  @Column('varchar', { length: 255, nullable: true })
+  correo?: string;
 
   @Column('varchar', { length: 255, select: false })
   clave: string;

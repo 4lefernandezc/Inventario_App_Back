@@ -31,9 +31,6 @@ export class InventarioSucursal {
   @Column('varchar', { length: 50, name: 'tipo_unidad' })
   tipoUnidad: string;
 
-  @Column('varchar', { length: 50 })
-  ubicacion: string;
-
   @CreateDateColumn({ name: 'fecha_creacion' })
   fechaCreacion: Date;
 

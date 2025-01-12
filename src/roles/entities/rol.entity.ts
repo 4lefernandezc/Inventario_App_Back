@@ -16,6 +16,9 @@ export class Rol {
   @Column('varchar', { length: 50 })
   nombre: string;
 
+  @Column('varchar', { length: 250, nullable: true })
+  descripcion?: string;
+
   @CreateDateColumn({ name: 'fecha_creacion' })
   fechaCreacion: Date;
 

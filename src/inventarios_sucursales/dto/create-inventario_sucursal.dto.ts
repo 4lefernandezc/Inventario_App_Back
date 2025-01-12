@@ -3,7 +3,6 @@ import {
   IsInt,
   IsString,
   Min,
-  IsOptional,
   MaxLength,
   IsDefined,
   IsNumber,
@@ -26,14 +25,14 @@ export class CreateInventarioSucursalDto {
   @IsNumber({}, { message: 'El campo stock actual debe ser de tipo numero' })
   @IsInt()
   @Min(0, { message: 'El stock actual no puede ser negativo.' })
-  stockActual: number;
+  readonly stockActual: number;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo stock minimo es obligatorio' })
   @IsNumber({}, { message: 'El campo stock minimo debe ser de tipo numero' })
   @IsInt()
   @Min(0, { message: 'El stock mínimo no puede ser negativo.' })
-  stockMinimo: number;
+  readonly stockMinimo: number;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo tipo_unidad es obligatorio' })
@@ -41,13 +40,5 @@ export class CreateInventarioSucursalDto {
   @MaxLength(150, {
     message: 'El campo tipo_unidad no debe ser mayor a 255 caracteres',
   })
-  tipoUnidad: string;
-
-  @ApiProperty()
-  @IsNotEmpty({ message: 'El campo ubicacion es obligatorio' })
-  @IsString({ message: 'El campo ubicacion debe ser de tipo cadena' })
-  @MaxLength(150, {
-    message: 'El campo ubicacion no debe ser mayor a 255 caracteres',
-  })
-  ubicacion?: string;
+  readonly tipoUnidad: string;
 }

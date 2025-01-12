@@ -25,7 +25,8 @@ export class RolesService {
     if (rol) throw new BadRequestException('Ya existe un rol con ese nombre');
     const newRol = this.rolesRepository.create({
       ...createRolDto,
-      nombre: createRolDto.nombre.toLowerCase(),
+      nombre: createRolDto.nombre.toLowerCase().trim(),
+      descripcion: createRolDto.descripcion?.trim() || null,
     });
     return this.rolesRepository.save(newRol);
   }

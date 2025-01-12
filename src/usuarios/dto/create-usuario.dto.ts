@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
-  IsBooleanString,
   IsDefined,
   IsEmail,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   MaxLength,
 } from 'class-validator';
@@ -36,13 +36,14 @@ export class CreateUsuarioDto {
   readonly apellido: string;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'El campo correo es obligatorio' })
-  @IsString({ message: 'El campo correo debe ser tipo cadena' })
-  @IsEmail({}, { message: 'El campo correo debe ser un correo electrónico' })
+  @IsOptional()
+  @IsString({ message: 'El campo correo debe ser de tipo cadena' })
+  @IsEmail( {}, { message: 'El campo correo debe ser un correo electrónico válido' },
+  )
   @MaxLength(255, {
     message: 'El campo correo no debe ser mayor a 255 caracteres',
   })
-  readonly correo: string;
+  readonly correo?: string;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo clave es obligatorio' })

@@ -25,11 +25,8 @@ export class Producto {
   @Column('varchar', { length: 100 })
   nombre: string;
 
-  @Column('varchar', { length: 255 })
-  descripcion: string;
-
-  @Column('integer', { name: 'id_categoria' })
-  idCategoria: number;
+  @Column('varchar', { length: 250, nullable: true })
+  descripcion?: string;
 
   @Column('decimal', { precision: 10, scale: 2, name: 'precio_compra' })
   precioCompra: number;
@@ -39,6 +36,9 @@ export class Producto {
 
   @Column('boolean')
   activo: boolean;
+
+  @Column('integer', { name: 'id_categoria' })
+  idCategoria: number;
 
   @Column('integer', { name: 'id_proveedor' })
   idProveedor: number;

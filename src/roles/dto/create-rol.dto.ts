@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateRolDto {
   @ApiProperty()
@@ -7,16 +7,16 @@ export class CreateRolDto {
   @IsString({ message: 'El campo nombre debe ser de tipo string' })
   @MaxLength(50, {
     message:
-      'El campo nombre debe tener una longitud máxima de 50 caracteres',
+      'El campo nombre no debe ser mayor a 50 caracteres',
   })
   readonly nombre: string;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'El campo descripcion es obligatorio' })
+  @IsOptional()
   @IsString({ message: 'El campo descripcion debe ser de tipo string' })
   @MaxLength(255, {
     message:
-      'El campo descripcion debe tener una longitud máxima de 255 caracteres',
+      'El campo descripcion no debe ser mayor a 255 caracteres',
   })
-  readonly descripcion: string;
+  readonly descripcion?: string;
 }

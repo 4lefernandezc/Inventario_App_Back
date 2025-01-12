@@ -4,6 +4,7 @@ import {
   IsDefined,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   MaxLength,
 } from 'class-validator';
@@ -26,12 +27,12 @@ export class CreateProductoDto {
   readonly nombre: string;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'El campo descripcion es obligatorio' })
-  @IsString({ message: 'El campo descripcion debe ser de tipo cadena' })
+  @IsOptional()
+  @IsString({ message: 'El campo descripción debe ser de tipo cadena' })
   @MaxLength(255, {
-    message: 'El campo descripcion no debe ser mayor a 255 caracteres',
+    message: 'El campo descripción no debe ser mayor a 255 caracteres',
   })
-  readonly descripcion: string;
+  readonly descripcion?: string;
 
   @ApiProperty()
   @IsDefined({ message: 'El campo id_categoria debe estar definido' })
