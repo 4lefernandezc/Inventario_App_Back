@@ -17,17 +17,20 @@ export class Cliente {
   @Column('varchar', { length: 25, name: 'tipo_documento' })
   tipoDocumento: string;
 
-  @Column('varchar', { length: 255 })
+  @Column('varchar', { length: 100 })
   nombre: string;
 
-  @Column('varchar', { length: 255 })
-  direccion: string;
+  @Column('varchar', { length: 100 })
+  apellido: string;
 
-  @Column('varchar', { length: 15 })
-  telefono: string;
+  @Column('varchar', { length: 255, nullable: true })
+  direccion?: string;
 
-  @Column({ length: 255 })
-  correo: string;
+  @Column('varchar', { length: 15, nullable: true })
+  telefono?: string;
+
+  @Column('varchar', { length: 255, nullable: true })
+  correo?: string;
 
   @Column('boolean', { default: true })
   activo: boolean;

@@ -24,7 +24,7 @@ export class CategoriasService {
 
     const categoria = this.categoriasRepository.create({
       nombre: createCategoriaDto.nombre.trim(),
-      descripcion: createCategoriaDto.descripcion.trim(),
+      descripcion: createCategoriaDto.descripcion?.trim() || null,
       activo: createCategoriaDto.activo
     });
     return this.categoriasRepository.save(categoria);

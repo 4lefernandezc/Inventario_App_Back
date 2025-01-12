@@ -31,8 +31,8 @@ export class ProveedoresService {
       nombre: createProveedorDto.nombre.trim(),
       nit: createProveedorDto.nit.trim(),
       telefono: createProveedorDto.telefono,
-      direccion: createProveedorDto.direccion.trim(),
-      correo: createProveedorDto.correo.trim(),
+      direccion: createProveedorDto.direccion?.trim() || null,
+      correo: createProveedorDto.correo?.trim() || null,
       activo: createProveedorDto.activo,
     });
     return this.proveedoresRepository.save(proveedor);

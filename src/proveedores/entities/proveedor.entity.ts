@@ -22,11 +22,11 @@ export class Proveedor {
   @Column('varchar', { length: 15 })
   telefono: string;
 
-  @Column('varchar', { length: 255 })
-  direccion: string;
+  @Column('varchar', { length: 255, nullable: true })
+  direccion?: string;
 
-  @Column('varchar', { length: 255 })
-  correo: string;
+  @Column('varchar', { length: 255, nullable: true })
+  correo?: string;
 
   @Column('boolean', { default: true })
   activo: boolean;

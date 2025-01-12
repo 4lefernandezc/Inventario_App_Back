@@ -23,8 +23,8 @@ export class Sucursal {
   @Column('varchar', { length: 15 })
   telefono: string;
 
-  @Column('varchar', { length: 255 })
-  correo: string;
+  @Column('varchar', { length: 255, nullable: true })
+  correo?: string;
 
   @Column('boolean', { default: true })
   activo: boolean;

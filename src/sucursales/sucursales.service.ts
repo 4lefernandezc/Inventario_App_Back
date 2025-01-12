@@ -40,7 +40,7 @@ export class SucursalesService {
       nombre: createSucursalDto.nombre.trim(),
       direccion: createSucursalDto.direccion.trim(),
       telefono: createSucursalDto.telefono,
-      correo: createSucursalDto.correo.trim(),
+      correo: createSucursalDto.correo?.trim() || null,
       activo: createSucursalDto.activo,
     });
     return this.sucursalesRepository.save(sucursal);

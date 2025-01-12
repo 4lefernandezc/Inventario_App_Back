@@ -16,8 +16,8 @@ export class Categoria {
   @Column('varchar', { length: 50 })
   nombre: string;
 
-  @Column('varchar', { length: 255 })
-  descripcion: string;
+  @Column('varchar', { length: 250, nullable: true })
+  descripcion?: string;
 
   @Column('boolean', { default: true })
   activo: boolean;

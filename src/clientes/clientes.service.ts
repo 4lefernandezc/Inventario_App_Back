@@ -30,9 +30,10 @@ export class ClientesService {
       documento: createClienteDto.documento.trim(),
       tipoDocumento: createClienteDto.tipoDocumento.trim(),
       nombre: createClienteDto.nombre.trim(),
-      direccion: createClienteDto.direccion.trim(),
-      telefono: createClienteDto.telefono.trim(),
-      correo: createClienteDto.correo.trim(),
+      apellido: createClienteDto.apellido.trim(),
+      direccion: createClienteDto.direccion?.trim() || null,
+      telefono: createClienteDto.telefono?.trim() || null,
+      correo: createClienteDto.correo?.trim() || null,
       activo: createClienteDto.activo,
     });
 
