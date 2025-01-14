@@ -1,5 +1,6 @@
 import { InventarioSucursal } from 'src/inventarios_sucursales/entities/inventario_sucursal.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { Venta } from 'src/ventas/entities/venta.entity';
 import {
   Column,
   CreateDateColumn,
@@ -35,9 +36,12 @@ export class Sucursal {
   @UpdateDateColumn({ name: 'fecha_modificacion' })
   fechaModificacion: Date;
 
-  @OneToMany(() => Usuario, (usuario) => usuario.rol)
+  @OneToMany(() => Usuario, (usuario) => usuario.sucursal)
   usuarios: Usuario[];
 
   @OneToMany(() => InventarioSucursal, (inventarios) => inventarios.producto)
   inventarios: InventarioSucursal[];
+
+  @OneToMany(() => Venta, (venta) => venta.sucursal)
+  ventas: Venta[];
 }

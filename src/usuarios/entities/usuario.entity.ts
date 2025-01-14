@@ -6,12 +6,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Rol } from 'src/roles/entities/rol.entity';
 import { Sucursal } from 'src/sucursales/entities/sucursal.entity';
+import { Venta } from 'src/ventas/entities/venta.entity';
 
 @Entity('usuarios')
 export class Usuario {
@@ -61,6 +63,9 @@ export class Usuario {
   })
   @JoinColumn({ name: 'sucursal_id' })
   sucursal: Sucursal;
+
+  @OneToMany(() => Venta, (venta) => venta.usuario)
+  ventas: Venta[];
 
   @BeforeInsert()
   @BeforeUpdate()
