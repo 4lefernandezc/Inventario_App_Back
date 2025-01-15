@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { Producto } from './entities/producto.entity';
 import { Categoria } from '../categorias/entities/categoria.entity';
 import { Proveedor } from 'src/proveedores/entities/proveedor.entity';
+import { QueryProductoDto } from './dto/query-producto.dto';
 
 @Injectable()
 export class ProductosService {
@@ -47,10 +48,56 @@ export class ProductosService {
     return this.productosRepository.save(producto);
   }
 
-  async findAll(): Promise<Producto[]> {
-    return this.productosRepository.find({
-      relations: ['categoria', 'proveedor'],
-    });
+  async findAll(q: QueryProductoDto){
+    const { page, limit } = q;
+    const query = this.productosRepository.createQueryBuilder('productos').select([
+      'productos.id',
+      'productos.codigo',
+      'productos.nombre',
+      'productos.descripcion',
+      'productos.precioCompra',
+      'productos.precioVenta',
+      'productos.activo',
+      'productos.idCategoria',
+      'productos.idProveedor',
+      'productos.fechaCreacion',
+      'productos.fechaModificacion',
+    ])
+    .leftJoinAndSelect('productos.categoria', 'categoria')
+    .leftJoinAndSelect('productos.proveedor', 'proveedor');
+
+    if (q.nombre) {
+      query.andWhere('productos.nombre ILIKE :nombre', {
+        nombre: `%${q.nombre}%`,
+      });
+    }
+
+    if (q.activo !== undefined) {
+      query.andWhere('productos.activo = :activo', {
+        activo: q.activo,
+      });
+    }
+
+    if (q.codigo) {
+      query.andWhere('productos.codigo ILIKE :codigo', {
+        codigo: `%${q.codigo}%`,
+      });
+    }
+    if (q.sidx) {
+      query.orderBy(`productos.id`, q.sord);
+    }
+
+    const [result, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: result,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 
   async findByCategoria(idCategoria: number): Promise<Producto[]> {
