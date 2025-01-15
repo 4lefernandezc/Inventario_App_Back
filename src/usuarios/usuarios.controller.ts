@@ -7,12 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { QueryUsuarioDto } from './dto/query-usuario.dto';
 
 @ApiTags('Usuarios') // Swagger
 @ApiBearerAuth() //lo de documentacion para loguear
@@ -27,8 +29,8 @@ export class UsuariosController {
   }
 
   @Get()
-  findAll() {
-    return this.usuariosService.findAll();
+  findAll(@Query() query: QueryUsuarioDto) {
+    return this.usuariosService.findAll(query);
   }
 
   @Get('rol/:idRol')

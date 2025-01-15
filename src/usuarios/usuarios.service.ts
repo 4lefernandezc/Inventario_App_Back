@@ -11,6 +11,7 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { Rol } from 'src/roles/entities/rol.entity';
 import { Sucursal } from 'src/sucursales/entities/sucursal.entity';
+import { QueryUsuarioDto } from './dto/query-usuario.dto';
 
 @Injectable()
 export class UsuariosService {
@@ -53,8 +54,63 @@ export class UsuariosService {
     return this.usuariosRepository.save(nuevoUsuario);
   }
 
-  async findAll(): Promise<Usuario[]> {
-    return this.usuariosRepository.find();
+  async findAll(q: QueryUsuarioDto){
+    const { page, limit } = q;
+    const query = this.usuariosRepository.createQueryBuilder('usuarios').select([
+      'usuarios.id',
+      'usuarios.usuario',
+      'usuarios.nombre',
+      'usuarios.apellido',
+      'usuarios.correo',
+      'usuarios.activo',
+      'usuarios.ultimoLogin',
+      'usuarios.rolId',
+      'usuarios.sucursalId',
+      'usuarios.fechaCreacion',
+      'usuarios.fechaModificacion',
+    ])
+    .innerJoin('usuarios.rol', 'rol')
+    .innerJoin('usuarios.sucursal', 'sucursal')
+
+    if (q.usuario) {
+      query.andWhere('usuarios.usuario ILIKE :usuario', {
+        usuario: `%${q.usuario}%`,
+      });
+    }
+    
+    if (q.nombre) {
+      query.andWhere('usuarios.nombre ILIKE :nombre', {
+        nombre: `%${q.nombre}%`,
+      });
+    }
+
+    if (q.apellido) {
+      query.andWhere('usuarios.apellido ILIKE :apellido', {
+        apellido: `%${q.apellido}%`,
+      });
+    }
+
+    if (q.activo !== undefined) {
+      query.andWhere('usuarios.activo = :activo', {
+        activo: q.activo,
+      });
+    }
+
+    if (q.sidx) {
+      query.orderBy(`usuarios.id`, q.sord);
+    }
+
+    const [result, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: result,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 
   async findByRol(idRol: number): Promise<Usuario[]> {
