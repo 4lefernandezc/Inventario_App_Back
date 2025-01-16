@@ -7,6 +7,7 @@ import {
   IsDefined,
   IsNumber,
   IsNotEmpty,
+  IsOptional,
 } from 'class-validator';
 
 export class CreateInventarioSucursalDto {
@@ -33,6 +34,13 @@ export class CreateInventarioSucursalDto {
   @IsInt()
   @Min(0, { message: 'El stock mínimo no puede ser negativo.' })
   readonly stockMinimo: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumber({}, { message: 'El campo stock maximo debe ser de tipo numero' })
+  @IsInt()
+  @Min(0, { message: 'El stock máximo no puede ser negativo.' })
+  readonly stockMaximo?: number;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo tipo_unidad es obligatorio' })

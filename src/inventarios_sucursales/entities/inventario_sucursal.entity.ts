@@ -6,7 +6,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  Unique,
 } from 'typeorm';
 import { Producto } from 'src/productos/entities/producto.entity';
 import { Sucursal } from 'src/sucursales/entities/sucursal.entity';
@@ -22,11 +21,14 @@ export class InventarioSucursal {
   @Column('integer', { name: 'id_sucursal' })
   idSucursal: number;
 
-  @Column('integer', { name: 'stock_actual', default: 0 })
+  @Column('integer', { name: 'stock_actual' })
   stockActual: number;
 
   @Column('integer', { name: 'stock_minimo', default: 0 })
   stockMinimo: number;
+
+  @Column('integer', { name: 'stock_maximo', nullable: true })
+  stockMaximo?: number;
 
   @Column('varchar', { length: 50, name: 'tipo_unidad' })
   tipoUnidad: string;

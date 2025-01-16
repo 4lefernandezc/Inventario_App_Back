@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { Rol } from 'src/roles/entities/rol.entity';
 import { Sucursal } from 'src/sucursales/entities/sucursal.entity';
 import { Venta } from 'src/ventas/entities/venta.entity';
+import { Compra } from 'src/compras/entities/compra.entity';
 
 @Entity('usuarios')
 export class Usuario {
@@ -67,10 +68,12 @@ export class Usuario {
   @OneToMany(() => Venta, (venta) => venta.usuario)
   ventas: Venta[];
 
+  @OneToMany(() => Compra, (compra) => compra.usuario)
+  compras: Compra[];
+
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {
-    // Solo encripta la clave si es nueva o no está en formato bcrypt
     if (this.clave && !this.clave.startsWith('$2b$')) {
       const salt = await bcrypt.genSalt();
       this.clave = await bcrypt.hash(this.clave, salt);
