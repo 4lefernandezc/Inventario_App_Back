@@ -7,9 +7,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { QueryProductoDto } from './dto/query-producto.dto';
 
-@ApiTags('Productos') // Swagger
-@ApiBearerAuth() //lo de documentacion para loguear
-@UseGuards(JwtAuthGuard) //lo de documentacion para loguear
+@ApiTags('Productos')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('productos')
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}

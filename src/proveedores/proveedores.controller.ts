@@ -5,9 +5,9 @@ import { UpdateProveedorDto } from './dto/update-proveedore.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@ApiTags('Proveedores') // Swagger
-@ApiBearerAuth() //lo de documentacion para loguear
-@UseGuards(JwtAuthGuard) //lo de documentacion para loguear
+@ApiTags('Proveedores')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('proveedores')
 export class ProveedoresController {
   constructor(private readonly proveedoresService: ProveedoresService) {}

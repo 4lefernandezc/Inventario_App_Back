@@ -5,9 +5,9 @@ import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@ApiTags('Categorias') // Swagger
-@ApiBearerAuth() //lo de documentacion para loguear
-@UseGuards(JwtAuthGuard) //lo de documentacion para loguear
+@ApiTags('Categorias')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('categorias')
 export class CategoriasController {
   constructor(private readonly categoriasService: CategoriasService) {}

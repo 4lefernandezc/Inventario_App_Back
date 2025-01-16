@@ -77,7 +77,6 @@ export class SucursalesService {
   async remove(id: number): Promise<{ message: string; sucursal?: Sucursal }> {
     const sucursal = await this.findOne(id);
   
-    // Verificar si hay usuarios asociados a la sucursal
     const usuariosAsociados = await this.sucursalesRepository
       .createQueryBuilder('sucursal')
       .leftJoinAndSelect('sucursal.usuarios', 'usuario')

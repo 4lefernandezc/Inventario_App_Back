@@ -45,7 +45,6 @@ export class VentasService {
         const { detalles, idSucursal, idCliente, idUsuario, tipoDocumento } = createVentaDto;
         let subtotalVenta = 0;
 
-        // Verificar el stock de todos los productos antes de iniciar la transacción
         for (const detalle of detalles) {
             const inventario = await this.inventarioRepository.findOne({
                 where: {
@@ -68,7 +67,6 @@ export class VentasService {
             }
         }
 
-        // Si todos los productos tienen stock suficiente, proceder con la creación de la venta
         const detallesConPrecios = await Promise.all(
             detalles.map(async (detalle) => {
                 const inventario = await this.inventarioRepository.findOne({
@@ -79,14 +77,12 @@ export class VentasService {
                     relations: ['producto']
                 });
 
-                // Actualizar el stock
                 const nuevoStock = inventario.stockActual - detalle.cantidad;
                 await this.inventarioRepository.update(
                     { id: inventario.id },
                     { stockActual: nuevoStock }
                 );
 
-                // Calcular subtotal del detalle
                 const precioUnitario = inventario.producto.precioVenta;
                 const subtotalDetalle = (precioUnitario * detalle.cantidad) - (detalle.descuento || 0);
                 subtotalVenta += subtotalDetalle;
@@ -99,14 +95,12 @@ export class VentasService {
             })
         );
 
-      // Generar número de documento automático
       const numeroDocumento = await this.generarNumeroDocumento(tipoDocumento);
 
-      // Crear la venta
       const venta = this.ventasRepository.create({
         numeroDocumento: numeroDocumento,
         subtotal: subtotalVenta,
-        totalVenta: subtotalVenta, // Aquí se podria agregar impuestos si es necesario
+        totalVenta: subtotalVenta,
         metodoPago: createVentaDto.metodoPago,
         estado: 'completada',
         cliente: idCliente ? { id: idCliente } : null,
@@ -114,10 +108,8 @@ export class VentasService {
         sucursal: { id: idSucursal }
       });
 
-      // Guardar la venta
       const ventaGuardada = await this.ventasRepository.save(venta);
 
-      // Crear y guardar los detalles
       const detallesVenta = detallesConPrecios.map(detalle => 
         this.detalleVentaRepository.create({
           cantidad: detalle.cantidad,
@@ -182,7 +174,6 @@ export class VentasService {
     await queryRunner.startTransaction();
 
     try {
-      // Primero obtenemos la venta básica con bloqueo
       const venta = await queryRunner.manager.findOne(Venta, {
         where: { id },
         lock: { mode: 'pessimistic_write' }
@@ -196,7 +187,6 @@ export class VentasService {
         throw new BadRequestException('Esta venta ya está anulada');
       }
 
-      // Luego cargamos los detalles necesarios
       const ventaConDetalles = await queryRunner.manager
         .createQueryBuilder(Venta, 'venta')
         .leftJoinAndSelect('venta.detalles', 'detalles')
@@ -209,7 +199,6 @@ export class VentasService {
         throw new NotFoundException(`No se encontraron los detalles de la venta ${id}`);
       }
 
-      // Restaurar el stock de cada producto
       for (const detalle of ventaConDetalles.detalles) {
         const inventario = await queryRunner.manager.findOne(InventarioSucursal, {
           where: {
@@ -225,7 +214,6 @@ export class VentasService {
           );
         }
 
-        // Actualizar el stock usando el queryRunner
         await queryRunner.manager.update(
           InventarioSucursal,
           { id: inventario.id },
@@ -236,14 +224,12 @@ export class VentasService {
         );
       }
 
-      // Actualizar estado de la venta
       venta.estado = 'anulada';
       venta.fechaAnulacion = new Date();
       await queryRunner.manager.save(Venta, venta);
 
       await queryRunner.commitTransaction();
 
-      // Retornar la venta actualizada
       return this.obtenerVentaPorId(id);
 
     } catch (error) {

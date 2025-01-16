@@ -45,7 +45,6 @@ export class UsuariosService {
       correo: correo?.trim() || null,
       activo,
       clave: createUsuarioDto.clave,
-      // clave: process.env.DEFAULT_PASSWORD, // Clave por defecto
       rolId,
       sucursalId,
       ultimoLogin: new Date(),
@@ -130,12 +129,10 @@ export class UsuariosService {
   async update(id: number, updateUsuarioDto: UpdateUsuarioDto): Promise<{ message: string; usuario: Usuario }> {
     const usuario = await this.findOne(id);
 
-    // Verifica si se incluye la clave y sobrescribe solo si es proporcionada
     if (updateUsuarioDto.clave) {
       usuario.clave = updateUsuarioDto.clave;
     }
 
-    // Verifica rol y sucursal si fueron proporcionados
     if (updateUsuarioDto.rolId) {
       const rol = await this.rolesRepository.findOneBy({ id: updateUsuarioDto.rolId });
       if (!rol) throw new NotFoundException('El rol especificado no existe');
@@ -174,7 +171,6 @@ export class UsuariosService {
     usuarioOk.ultimoLogin = new Date();
     await this.usuariosRepository.save(usuarioOk);
 
-    // Elimina la clave antes de devolver el usuario
     delete usuarioOk.clave;
     return usuarioOk;
   }

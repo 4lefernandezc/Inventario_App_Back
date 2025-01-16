@@ -5,9 +5,9 @@ import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@ApiTags('Sucursales') // Swagger
-@ApiBearerAuth() //lo de documentacion para loguear
-@UseGuards(JwtAuthGuard) //lo de documentacion para loguear
+@ApiTags('Sucursales')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('sucursales')
 export class SucursalesController {
   constructor(private readonly sucursalesService: SucursalesService) {}
