@@ -27,6 +27,10 @@ export class ProveedoresService {
       throw new BadRequestException(`El proveedor con el NIT proporcionado ya existe`);
     }
 
+    const linkWhatsApp = createProveedorDto.telefono
+    ? `https://wa.me/${createProveedorDto.telefono.trim()}`
+    : null;
+
     const proveedor = this.proveedoresRepository.create({
       nombre: createProveedorDto.nombre.trim(),
       nit: createProveedorDto.nit.trim(),
@@ -34,6 +38,7 @@ export class ProveedoresService {
       direccion: createProveedorDto.direccion?.trim() || null,
       correo: createProveedorDto.correo?.trim() || null,
       activo: createProveedorDto.activo,
+      linkWhatsapp: linkWhatsApp,
     });
     return this.proveedoresRepository.save(proveedor);
   }

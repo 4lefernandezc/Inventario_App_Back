@@ -29,6 +29,9 @@ export class Proveedor {
   @Column('varchar', { length: 255, nullable: true })
   correo?: string;
 
+  @Column('varchar', { length: 255, nullable: true, name: 'link_whatsapp' })
+  linkWhatsapp?: string;
+
   @Column('boolean', { default: true })
   activo: boolean;
 

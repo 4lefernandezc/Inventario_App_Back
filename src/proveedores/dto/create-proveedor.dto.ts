@@ -1,5 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateProveedorDto {
   @ApiProperty()
@@ -37,12 +44,22 @@ export class CreateProveedorDto {
   @ApiProperty()
   @IsOptional()
   @IsString({ message: 'El campo correo debe ser de tipo cadena' })
-  @IsEmail( {}, { message: 'El campo correo debe ser un correo electrónico válido' },
+  @IsEmail(
+    {},
+    { message: 'El campo correo debe ser un correo electrónico válido' },
   )
   @MaxLength(255, {
     message: 'El campo correo no debe ser mayor a 255 caracteres',
   })
   readonly correo?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString({ message: 'El campo link whatsapp debe ser de tipo cadena' })
+  @MaxLength(255, {
+    message: 'El campo link whatsapp no debe ser mayor a 255 caracteres',
+  })
+  readonly linkWhatsapp?: string;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo activo no debe ser vacío' })

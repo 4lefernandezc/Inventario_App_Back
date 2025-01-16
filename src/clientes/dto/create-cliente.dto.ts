@@ -74,6 +74,14 @@ export class CreateClienteDto {
   })
   readonly correo?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString({ message: 'El campo link whatsapp debe ser de tipo cadena' })
+  @MaxLength(255, {
+    message: 'El campo link whatsapp no debe ser mayor a 255 caracteres',
+  })
+  readonly linkWhatsapp?: string;
+
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo activo no debe ser vacío' })
   @IsBoolean({ message: 'El campo activo debe ser de tipo booleano' })

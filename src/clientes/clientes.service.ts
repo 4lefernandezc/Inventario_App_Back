@@ -26,6 +26,10 @@ export class ClientesService {
       throw new BadRequestException(`El cliente con el documento proporcionado ya existe`);
     }
 
+    const linkWhatsApp = createClienteDto.telefono
+      ? `https://wa.me/${createClienteDto.telefono.trim()}`
+      : null;
+
     const cliente = this.clientesRepository.create({
       documento: createClienteDto.documento.trim(),
       tipoDocumento: createClienteDto.tipoDocumento.trim(),
@@ -35,6 +39,7 @@ export class ClientesService {
       telefono: createClienteDto.telefono?.trim() || null,
       correo: createClienteDto.correo?.trim() || null,
       activo: createClienteDto.activo,
+      linkWhatsapp: linkWhatsApp,
     });
 
     return this.clientesRepository.save(cliente);
@@ -49,6 +54,7 @@ export class ClientesService {
         'clientes.nombre',
         'clientes.direccion',
         'clientes.telefono',
+        'clientes.linkWhatsapp',
         'clientes.correo',
         'clientes.activo',
         'clientes.fechaCreacion',
