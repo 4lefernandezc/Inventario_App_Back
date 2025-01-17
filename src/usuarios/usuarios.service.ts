@@ -121,8 +121,16 @@ export class UsuariosService {
   }
 
   async findOne(id: number): Promise<Usuario> {
-    const usuario = await this.usuariosRepository.findOneBy({ id });
-    if (!usuario) throw new NotFoundException('El usuario no existe');
+    const usuario = await this.usuariosRepository.findOne({
+      where: { id },
+      select: ['id', 'usuario', 'nombre', 'apellido', 'correo', 'clave', 'activo', 'ultimoLogin', 'rolId', 'sucursalId'],
+      relations: ['rol', 'sucursal']
+    });
+
+    if (!usuario) {
+      throw new NotFoundException('El usuario no existe');
+    }
+
     return usuario;
   }
 
@@ -173,5 +181,9 @@ export class UsuariosService {
 
     delete usuarioOk.clave;
     return usuarioOk;
+  }
+
+  async updatePassword(userId: number, hashedPassword: string): Promise<void> {
+    await this.usuariosRepository.update(userId, { clave: hashedPassword });
   }
 }
