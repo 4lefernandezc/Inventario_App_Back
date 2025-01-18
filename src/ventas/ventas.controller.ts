@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Param, Body, Put, Delete, Patch, ParseIntPipe, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Body,
+  Delete,
+  ParseIntPipe,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { VentasService } from './ventas.service';
 import { CreateVentaDto } from './dto/create-venta.dto';
@@ -15,7 +25,7 @@ export class VentasController {
 
   @Get()
   @ApiResponse({ status: 200, description: 'Lista de todas las ventas' })
-  async obtenerVentas(@Query() query: QueryVentaDto){
+  async obtenerVentas(@Query() query: QueryVentaDto) {
     return this.ventasService.obtenerVentas(query);
   }
 
@@ -34,18 +44,11 @@ export class VentasController {
   }
 
   @Delete(':id')
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Venta anulada exitosamente',
-    type: Venta
-  })
+  @ApiResponse({ status: 200, description: 'Venta anulada exitosamente' })
   @ApiResponse({ status: 404, description: 'Venta no encontrada' })
   @ApiResponse({ status: 400, description: 'La venta ya está anulada' })
   @ApiResponse({ status: 500, description: 'Error al anular la venta' })
-  async anularVentaPorId(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<Venta> {
+  async anularVentaPorId( @Param('id', ParseIntPipe) id: number ): Promise<Venta> {
     return this.ventasService.anularVenta(id);
   }
 }
-

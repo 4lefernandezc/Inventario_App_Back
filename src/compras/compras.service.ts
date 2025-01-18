@@ -6,6 +6,7 @@ import { CreateCompraDto } from './dto/create-compra.dto';
 import { DetalleCompra } from './entities/detalle_compra.entity';
 import { InventarioSucursal } from '../inventarios_sucursales/entities/inventario_sucursal.entity';
 import { Producto } from 'src/productos/entities/producto.entity';
+import { QueryCompraDto } from './dto/query-compra.dto';
 
 @Injectable()
 export class ComprasService {
@@ -173,20 +174,76 @@ export class ComprasService {
     return compra;
   }
 
-  async obtenerCompras(): Promise<Compra[]> {
-    return this.comprasRepository.find({
-      relations: {
-        detalles: {
-          producto: true
-        },
-        proveedor: true,
-        usuario: true,
-      },
-      order: {
-        fechaCreacion: 'DESC'
+  async obtenerCompras(q: QueryCompraDto) {
+    const {
+      page,
+      limit,
+      numeroDocumento,
+      metodoPago,
+      totalCompra,
+      estado,
+      sidx,
+      sord,
+    } = q;
+    const query = this.comprasRepository
+      .createQueryBuilder('compras')
+      .select([
+        'compras.id',
+        'compras.numeroDocumento',
+        'compras.subtotal',
+        'compras.totalCompra',
+        'compras.metodoPago',
+        'compras.estado',
+        'compras.fechaCreacion',
+        'compras.fechaModificacion',
+        'compras.fechaAnulacion',
+      ])
+      .leftJoinAndSelect('compras.proveedor', 'proveedor')
+      .leftJoinAndSelect('compras.usuario', 'usuario')
+      .leftJoinAndSelect('compras.sucursal', 'sucursal')
+      .leftJoinAndSelect('compras.detalles', 'detalles')
+      .leftJoinAndSelect('detalles.producto', 'producto');
+
+      if (numeroDocumento) {
+        query.andWhere('compras.numeroDocumento ILIKE :numeroDocumento', {
+          numeroDocumento: `%${numeroDocumento}%`,
+        });
       }
-    });
-  }
+  
+      if (metodoPago) {
+        query.andWhere('compras.metodoPago ILIKE :metodoPago', {
+          metodoPago: `%${metodoPago}%`,
+        });
+      }
+  
+      if (totalCompra) {
+        query.andWhere('compras.totalCompra = :totalCompra', {
+          totalCompra,
+        });
+      }
+  
+      if (estado) {
+        query.andWhere('compras.estado ILIKE :estado', {
+          estado: `%${estado}%`,
+        });
+      }
+  
+      if (sidx) {
+        query.orderBy(`compras.${sidx}`, sord);
+      }
+  
+      const [result, total] = await query
+        .skip((page - 1) * limit)
+        .take(limit)
+        .getManyAndCount();
+  
+      return {
+        data: result,
+        total,
+        page,
+        pageCount: Math.ceil(total / limit),
+      };
+    }
 
   async anularCompra(id: number): Promise<Compra> {
     const queryRunner = this.dataSource.createQueryRunner();
