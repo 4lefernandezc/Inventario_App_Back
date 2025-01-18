@@ -1,10 +1,16 @@
-import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, Like } from 'typeorm';
 import { Venta } from './entities/venta.entity';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { DetalleVenta } from './entities/detalle_venta.entity';
 import { InventarioSucursal } from '../inventarios_sucursales/entities/inventario_sucursal.entity';
+import { QueryVentaDto } from './dto/query-venta.dto';
 
 @Injectable()
 export class VentasService {
@@ -43,57 +49,57 @@ export class VentasService {
 
     try {
         const { detalles, idSucursal, idCliente, idUsuario, tipoDocumento } = createVentaDto;
-        let subtotalVenta = 0;
+      let subtotalVenta = 0;
 
-        for (const detalle of detalles) {
-            const inventario = await this.inventarioRepository.findOne({
-                where: {
-                    idProducto: detalle.idProducto,
-                    idSucursal: idSucursal
-                },
-                relations: ['producto']
-            });
+      for (const detalle of detalles) {
+        const inventario = await this.inventarioRepository.findOne({
+          where: {
+            idProducto: detalle.idProducto,
+            idSucursal: idSucursal
+          },
+          relations: ['producto']
+        });
 
-            if (!inventario) {
-                throw new BadRequestException(
+        if (!inventario) {
+          throw new BadRequestException(
                     `No se encontró inventario para el producto ${detalle.idProducto} en la sucursal ${idSucursal}`
-                );
-            }
-
-            if (inventario.stockActual < detalle.cantidad) {
-                throw new BadRequestException(
-                    `Stock insuficiente para el producto ${inventario.producto.nombre}. Stock actual: ${inventario.stockActual}`
-                );
-            }
+          );
         }
 
-        const detallesConPrecios = await Promise.all(
-            detalles.map(async (detalle) => {
-                const inventario = await this.inventarioRepository.findOne({
-                    where: {
-                        idProducto: detalle.idProducto,
-                        idSucursal: idSucursal
-                    },
-                    relations: ['producto']
-                });
+        if (inventario.stockActual < detalle.cantidad) {
+          throw new BadRequestException(
+                    `Stock insuficiente para el producto ${inventario.producto.nombre}. Stock actual: ${inventario.stockActual}`
+          );
+        }
+      }
 
-                const nuevoStock = inventario.stockActual - detalle.cantidad;
-                await this.inventarioRepository.update(
-                    { id: inventario.id },
-                    { stockActual: nuevoStock }
-                );
+      const detallesConPrecios = await Promise.all(
+        detalles.map(async (detalle) => {
+          const inventario = await this.inventarioRepository.findOne({
+            where: {
+              idProducto: detalle.idProducto,
+              idSucursal: idSucursal
+            },
+            relations: ['producto']
+          });
 
-                const precioUnitario = inventario.producto.precioVenta;
-                const subtotalDetalle = (precioUnitario * detalle.cantidad) - (detalle.descuento || 0);
-                subtotalVenta += subtotalDetalle;
+          const nuevoStock = inventario.stockActual - detalle.cantidad;
+          await this.inventarioRepository.update(
+            { id: inventario.id },
+            { stockActual: nuevoStock }
+          );
 
-                return {
-                    ...detalle,
-                    precio_unitario: precioUnitario,
-                    subtotal: subtotalDetalle
-                };
-            })
-        );
+          const precioUnitario = inventario.producto.precioVenta;
+          const subtotalDetalle = (precioUnitario * detalle.cantidad) - (detalle.descuento || 0);
+          subtotalVenta += subtotalDetalle;
+
+          return {
+            ...detalle,
+            precio_unitario: precioUnitario,
+            subtotal: subtotalDetalle
+          };
+        }),
+      );
 
       const numeroDocumento = await this.generarNumeroDocumento(tipoDocumento);
 
@@ -118,7 +124,7 @@ export class VentasService {
           subtotal: detalle.subtotal,
           producto: { id: detalle.idProducto },
           venta: ventaGuardada
-        })
+        }),
       );
 
       await this.detalleVentaRepository.save(detallesVenta);
@@ -143,7 +149,7 @@ export class VentasService {
         },
         cliente: true,
         usuario: true,
-      }
+      },
     });
 
     if (!venta) {
@@ -152,20 +158,76 @@ export class VentasService {
 
     return venta;
   }
-  
-  async obtenerVentas(): Promise<Venta[]> {
-    return this.ventasRepository.find({
-      relations: {
-        detalles: {
-          producto: true
-        },
-        cliente: true,
-        usuario: true,
-      },
-      order: {
-        fechaCreacion: 'DESC'
-      }
-    });
+
+  async obtenerVentas(q: QueryVentaDto) {
+    const {
+      page,
+      limit,
+      numeroDocumento,
+      metodoPago,
+      totalVenta,
+      estado,
+      sidx,
+      sord,
+    } = q;
+    const query = this.ventasRepository
+      .createQueryBuilder('ventas')
+      .select([
+        'ventas.id',
+        'ventas.numeroDocumento',
+        'ventas.subtotal',
+        'ventas.totalVenta',
+        'ventas.metodoPago',
+        'ventas.estado',
+        'ventas.fechaCreacion',
+        'ventas.fechaModificacion',
+        'ventas.fechaAnulacion',
+      ])
+      .leftJoinAndSelect('ventas.cliente', 'cliente')
+      .leftJoinAndSelect('ventas.usuario', 'usuario')
+      .leftJoinAndSelect('ventas.sucursal', 'sucursal')
+      .leftJoinAndSelect('ventas.detalles', 'detalles')
+      .leftJoinAndSelect('detalles.producto', 'producto');
+
+    if (numeroDocumento) {
+      query.andWhere('ventas.numeroDocumento ILIKE :numeroDocumento', {
+        numeroDocumento: `%${numeroDocumento}%`,
+      });
+    }
+
+    if (metodoPago) {
+      query.andWhere('ventas.metodoPago ILIKE :metodoPago', {
+        metodoPago: `%${metodoPago}%`,
+      });
+    }
+
+    if (totalVenta) {
+      query.andWhere('ventas.totalVenta = :totalVenta', {
+        totalVenta,
+      });
+    }
+
+    if (estado) {
+      query.andWhere('ventas.estado ILIKE :estado', {
+        estado: `%${estado}%`,
+      });
+    }
+
+    if (sidx) {
+      query.orderBy(`ventas.${sidx}`, sord);
+    }
+
+    const [result, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: result,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 
   async anularVenta(id: number): Promise<Venta> {
@@ -200,27 +262,30 @@ export class VentasService {
       }
 
       for (const detalle of ventaConDetalles.detalles) {
-        const inventario = await queryRunner.manager.findOne(InventarioSucursal, {
-          where: {
-            idProducto: detalle.producto.id,
-            idSucursal: ventaConDetalles.sucursal.id
+        const inventario = await queryRunner.manager.findOne(
+          InventarioSucursal,
+          {
+            where: {
+              idProducto: detalle.producto.id,
+              idSucursal: ventaConDetalles.sucursal.id,
+            },
+            lock: { mode: 'pessimistic_write' },
           },
-          lock: { mode: 'pessimistic_write' }
-        });
+        );
 
         if (!inventario) {
           throw new NotFoundException(
-            `No se encontró el inventario para el producto ${detalle.producto.id} en la sucursal ${ventaConDetalles.sucursal.id}`
+            `No se encontró el inventario para el producto ${detalle.producto.id} en la sucursal ${ventaConDetalles.sucursal.id}`,
           );
         }
 
         await queryRunner.manager.update(
           InventarioSucursal,
           { id: inventario.id },
-          { 
+          {
             stockActual: inventario.stockActual + detalle.cantidad,
             fechaModificacion: new Date()
-          }
+          },
         );
       }
 
@@ -231,14 +296,13 @@ export class VentasService {
       await queryRunner.commitTransaction();
 
       return this.obtenerVentaPorId(id);
-
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      
+
       if (error instanceof NotFoundException || error instanceof BadRequestException) {
         throw error;
       }
-      
+
       throw new InternalServerErrorException(
         'Error al procesar la anulación de la venta',
         error.message

@@ -10,7 +10,7 @@ export class GetSortParamstDto {
   @IsString()
   @ApiProperty({
     required: false,
-    description: 'El orden solicitado para los registros (por defecto: asc)',
+    description: 'El orden solicitado para los registros (por defecto: ASC)',
   })
   sord?: OrderDirection = 'ASC';
 

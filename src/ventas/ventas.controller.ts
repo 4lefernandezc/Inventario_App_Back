@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Param, Body, Put, Delete, Patch, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Put, Delete, Patch, ParseIntPipe, UseGuards, Query } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { VentasService } from './ventas.service';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { Venta } from './entities/venta.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { QueryVentaDto } from './dto/query-venta.dto';
 
 @ApiTags('Ventas')
 @ApiBearerAuth()
@@ -14,8 +15,8 @@ export class VentasController {
 
   @Get()
   @ApiResponse({ status: 200, description: 'Lista de todas las ventas' })
-  async obtenerVentas(): Promise<Venta[]> {
-    return this.ventasService.obtenerVentas();
+  async obtenerVentas(@Query() query: QueryVentaDto){
+    return this.ventasService.obtenerVentas(query);
   }
 
   @Get(':id')
