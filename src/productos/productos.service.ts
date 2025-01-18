@@ -134,6 +134,15 @@ export class ProductosService {
     updateProductoDto: UpdateProductoDto,
   ): Promise<{ message: string; producto: Producto }> {
     const producto = await this.findOne(id);
+
+    if (updateProductoDto.idCategoria) {
+      producto.categoria = { id: updateProductoDto.idCategoria } as Categoria;
+    }
+
+    if (updateProductoDto.idProveedor) {
+      producto.proveedor = { id: updateProductoDto.idProveedor } as Proveedor;
+    }
+
     const updatedProducto = Object.assign(producto, updateProductoDto);
     await this.productosRepository.save(updatedProducto);
     return {

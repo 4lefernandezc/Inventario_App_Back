@@ -56,6 +56,12 @@ export class InventariosSucursalesService {
     updateInventarioSucursalDto: UpdateInventarioSucursalDto,
   ): Promise<{ message: string; inventario: InventarioSucursal }> {
     const inventario = await this.findOne(id);
+    if (updateInventarioSucursalDto.idProducto) {
+      inventario.idProducto = updateInventarioSucursalDto.idProducto;
+    }
+    if (updateInventarioSucursalDto.idSucursal) {
+      inventario.idSucursal = updateInventarioSucursalDto.idSucursal;
+    }
     Object.assign(inventario, updateInventarioSucursalDto);
     const updatedInventario = await this.inventariosRepository.save(inventario);
     return {
