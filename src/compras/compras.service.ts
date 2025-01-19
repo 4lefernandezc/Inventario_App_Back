@@ -7,6 +7,7 @@ import { DetalleCompra } from './entities/detalle_compra.entity';
 import { InventarioSucursal } from '../inventarios_sucursales/entities/inventario_sucursal.entity';
 import { Producto } from 'src/productos/entities/producto.entity';
 import { QueryCompraDto } from './dto/query-compra.dto';
+import { Caja } from 'src/cajas/entities/caja.entity';
 
 @Injectable()
 export class ComprasService {
@@ -20,27 +21,23 @@ export class ComprasService {
     private readonly inventarioRepository: Repository<InventarioSucursal>,
     @InjectRepository(Producto)
     private readonly productoRepository: Repository<Producto>,
+    @InjectRepository(Caja)
+    private readonly cajaRepository: Repository<Caja>,
   ) {}
 
-  private async generarNumeroDocumento(tipo: string): Promise<string> {
-    const ultimaCompra = await this.comprasRepository.findOne({
+  async crearCompra(createCompraDto: CreateCompraDto): Promise<Compra> {
+    const { idSucursal } = createCompraDto;
+    const cajaActual = await this.cajaRepository.findOne({
       where: {
-        numeroDocumento: Like(`${tipo}-%`),
-      },
-      order: {
-        id: 'DESC',
+        sucursal: { id: idSucursal },
+        estado: 'abierta',
       },
     });
-
-    if (!ultimaCompra) {
-      return `${tipo}-1`;
+    
+    if (!cajaActual) {
+      throw new BadRequestException('No hay una caja abierta para realizar compras');
     }
 
-    const ultimoNumero = parseInt(ultimaCompra.numeroDocumento.split('-')[1]);
-    return `${tipo}-${ultimoNumero + 1}`;
-  }
-
-  async crearCompra(createCompraDto: CreateCompraDto): Promise<Compra> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -99,6 +96,7 @@ export class ComprasService {
         totalCompra: subtotalCompra,
         metodoPago: createCompraDto.metodoPago,
         estado: 'completada',
+        caja: cajaActual,
         proveedor: { id: idProveedor },
         usuario: { id: idUsuario },
         sucursal: { id: idSucursal }
@@ -153,6 +151,24 @@ export class ComprasService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  private async generarNumeroDocumento(tipo: string): Promise<string> {
+    const ultimaCompra = await this.comprasRepository.findOne({
+      where: {
+        numeroDocumento: Like(`${tipo}-%`),
+      },
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    if (!ultimaCompra) {
+      return `${tipo}-1`;
+    }
+
+    const ultimoNumero = parseInt(ultimaCompra.numeroDocumento.split('-')[1]);
+    return `${tipo}-${ultimoNumero + 1}`;
   }
   
   async obtenerCompraPorId(id: number): Promise<Compra> {

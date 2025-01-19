@@ -1,3 +1,4 @@
+import { Caja } from 'src/cajas/entities/caja.entity';
 import { Compra } from 'src/compras/entities/compra.entity';
 import { InventarioSucursal } from 'src/inventarios_sucursales/entities/inventario_sucursal.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
@@ -48,4 +49,7 @@ export class Sucursal {
 
   @OneToMany(() => Compra, (compra) => compra.sucursal)
   compras: Compra[];
+
+  @OneToMany(() => Caja, (caja) => caja.sucursal)
+  cajas: Caja[];
 }

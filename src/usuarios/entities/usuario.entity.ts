@@ -15,6 +15,7 @@ import { Rol } from 'src/roles/entities/rol.entity';
 import { Sucursal } from 'src/sucursales/entities/sucursal.entity';
 import { Venta } from 'src/ventas/entities/venta.entity';
 import { Compra } from 'src/compras/entities/compra.entity';
+import { Caja } from 'src/cajas/entities/caja.entity';
 
 @Entity('usuarios')
 export class Usuario {
@@ -70,6 +71,12 @@ export class Usuario {
 
   @OneToMany(() => Compra, (compra) => compra.usuario)
   compras: Compra[];
+
+  @OneToMany(() => Caja, (caja) => caja.usuarioApertura)
+  cajasApertura: Caja[];
+
+  @OneToMany(() => Caja, (caja) => caja.usuarioCierre)
+  cajasCierre: Caja[];
 
   @BeforeInsert()
   @BeforeUpdate()

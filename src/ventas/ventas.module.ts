@@ -6,6 +6,7 @@ import { Venta } from './entities/venta.entity';
 import { DetalleVenta } from './entities/detalle_venta.entity';
 import { Producto } from '../productos/entities/producto.entity';
 import { InventarioSucursal } from 'src/inventarios_sucursales/entities/inventario_sucursal.entity';
+import { Caja } from 'src/cajas/entities/caja.entity';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { InventarioSucursal } from 'src/inventarios_sucursales/entities/inventar
       Venta,
       DetalleVenta,
       Producto,
-      InventarioSucursal
+      InventarioSucursal,
+      Caja
     ])
   ],
   controllers: [VentasController],

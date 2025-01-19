@@ -11,6 +11,7 @@ import { Cliente } from '../../clientes/entities/cliente.entity';
 import { Usuario } from '../../usuarios/entities/usuario.entity';
 import { Sucursal } from '../../sucursales/entities/sucursal.entity';
 import { DetalleVenta } from './detalle_venta.entity';
+import { Caja } from 'src/cajas/entities/caja.entity';
 
 @Entity('ventas')
 export class Venta {
@@ -23,7 +24,7 @@ export class Venta {
   @Column({ type: 'numeric', precision: 10, scale: 2 })
   subtotal: number;
 
-  @Column({  name:'total_venta', type: 'numeric', precision: 10, scale: 2 })
+  @Column({ name: 'total_venta', type: 'numeric', precision: 10, scale: 2 })
   totalVenta: number;
 
   @Column({
@@ -48,7 +49,7 @@ export class Venta {
 
   @CreateDateColumn({ name: 'fecha_creacion' })
   fechaCreacion: Date;
-  
+
   @UpdateDateColumn({ name: 'fecha_modificacion' })
   fechaModificacion: Date;
 
@@ -65,4 +66,7 @@ export class Venta {
     cascade: true,
   })
   detalles: DetalleVenta[];
+
+  @ManyToOne(() => Caja, (caja) => caja.ventas)
+  caja: Caja;
 }

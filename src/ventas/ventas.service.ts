@@ -11,6 +11,7 @@ import { CreateVentaDto } from './dto/create-venta.dto';
 import { DetalleVenta } from './entities/detalle_venta.entity';
 import { InventarioSucursal } from '../inventarios_sucursales/entities/inventario_sucursal.entity';
 import { QueryVentaDto } from './dto/query-venta.dto';
+import { Caja } from 'src/cajas/entities/caja.entity';
 
 @Injectable()
 export class VentasService {
@@ -22,27 +23,23 @@ export class VentasService {
     private readonly detalleVentaRepository: Repository<DetalleVenta>,
     @InjectRepository(InventarioSucursal)
     private readonly inventarioRepository: Repository<InventarioSucursal>,
+    @InjectRepository(Caja)
+    private readonly cajaRepository: Repository<Caja>,
   ) {}
 
-  private async generarNumeroDocumento(tipo: string): Promise<string> {
-    const ultimaVenta = await this.ventasRepository.findOne({
+  async crearVenta(createVentaDto: CreateVentaDto): Promise<Venta> {
+    const { idSucursal } = createVentaDto;
+    const cajaActual = await this.cajaRepository.findOne({
       where: {
-        numeroDocumento: Like(`${tipo}-%`),
-      },
-      order: {
-        id: 'DESC',
+        sucursal: { id: idSucursal },
+        estado: 'abierta',
       },
     });
-
-    if (!ultimaVenta) {
-      return `${tipo}-1`;
+    
+    if (!cajaActual) {
+      throw new BadRequestException('No hay una caja abierta para realizar ventas');
     }
-
-    const ultimoNumero = parseInt(ultimaVenta.numeroDocumento.split('-')[1]);
-    return `${tipo}-${ultimoNumero + 1}`;
-  }
-
-  async crearVenta(createVentaDto: CreateVentaDto): Promise<Venta> {
+    
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -109,6 +106,7 @@ export class VentasService {
         totalVenta: subtotalVenta,
         metodoPago: createVentaDto.metodoPago,
         estado: 'completada',
+        caja: cajaActual,
         cliente: idCliente ? { id: idCliente } : null,
         usuario: { id: idUsuario },
         sucursal: { id: idSucursal }
@@ -140,6 +138,24 @@ export class VentasService {
     }
   }
 
+  private async generarNumeroDocumento(tipo: string): Promise<string> {
+    const ultimaVenta = await this.ventasRepository.findOne({
+      where: {
+        numeroDocumento: Like(`${tipo}-%`),
+      },
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    if (!ultimaVenta) {
+      return `${tipo}-1`;
+    }
+
+    const ultimoNumero = parseInt(ultimaVenta.numeroDocumento.split('-')[1]);
+    return `${tipo}-${ultimoNumero + 1}`;
+  }
+  
   async obtenerVentaPorId(id: number): Promise<Venta> {
     const venta = await this.ventasRepository.findOne({
       where: { id },
