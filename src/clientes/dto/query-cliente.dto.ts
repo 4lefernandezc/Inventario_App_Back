@@ -9,10 +9,30 @@ export class QueryClienteDto extends GetPaginationSortParamsDto {
   @IsString()
   readonly nombre?: string;
 
+  @ApiPropertyOptional({ example: 'Apellido del Cliente' })
+  @IsOptional()
+  @IsString()
+  readonly apellido?: string;
+
   @ApiPropertyOptional({ example: '123456789' })
   @IsOptional()
   @IsString()
   readonly documento?: string;
+
+  @ApiPropertyOptional({ example: 'CC' })
+  @IsOptional()
+  @IsString()
+  readonly tipoDocumento?: string;
+
+  @ApiPropertyOptional({ example: '7656456' })
+  @IsOptional()
+  @IsString()
+  readonly telefono?: string;
+  
+  @ApiPropertyOptional({ example: 'ejemplo@gmail.com' })
+  @IsOptional()
+  @IsString()
+  readonly correo?: string;
 
   @ApiPropertyOptional({ example: true })
   @IsOptional()

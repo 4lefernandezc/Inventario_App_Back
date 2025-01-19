@@ -52,6 +52,7 @@ export class ClientesService {
         'clientes.documento',
         'clientes.tipoDocumento',
         'clientes.nombre',
+        'clientes.apellido',
         'clientes.direccion',
         'clientes.telefono',
         'clientes.linkWhatsapp',
@@ -67,15 +68,39 @@ export class ClientesService {
       });
     }
 
-    if (q.activo !== undefined) {
-      query.andWhere('clientes.activo = :activo', {
-        activo: q.activo,
+    if (q.apellido) {
+      query.andWhere('clientes.apellido ILIKE :apellido', {
+        apellido: `%${q.apellido}%`,
       });
     }
 
     if (q.documento) {
       query.andWhere('clientes.documento ILIKE :documento', {
         documento: `%${q.documento}%`,
+      });
+    }
+
+    if (q.tipoDocumento) {
+      query.andWhere('clientes.tipoDocumento ILIKE :tipoDocumento', {
+        tipoDocumento: `%${q.tipoDocumento}%`,
+      });
+    }
+
+    if (q.telefono) {
+      query.andWhere('clientes.telefono ILIKE :telefono', {
+        telefono: `%${q.telefono}%`,
+      });
+    }
+
+    if (q.correo) {
+      query.andWhere('clientes.correo ILIKE :correo', {
+        correo: `%${q.correo}%`,
+      });
+    }
+
+    if (q.activo !== undefined) {
+      query.andWhere('clientes.activo = :activo', {
+        activo: q.activo,
       });
     }
 
