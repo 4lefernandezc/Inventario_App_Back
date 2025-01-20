@@ -66,9 +66,45 @@ export class ProductosService {
     .leftJoinAndSelect('productos.categoria', 'categoria')
     .leftJoinAndSelect('productos.proveedor', 'proveedor');
 
+    if (q.codigo) {
+      query.andWhere('productos.codigo ILIKE :codigo', {
+        codigo: `%${q.codigo}%`,
+      });
+    }
+
     if (q.nombre) {
       query.andWhere('productos.nombre ILIKE :nombre', {
         nombre: `%${q.nombre}%`,
+      });
+    }
+
+    if (q.descripcion) {
+      query.andWhere('productos.descripcion ILIKE :descripcion', {
+        descripcion: `%${q.descripcion}%`,
+      });
+    } 
+
+    if (q.precioCompra) {
+      query.andWhere('productos.precioCompra = :precioCompra', {
+        precioCompra: q.precioCompra,
+      });
+    }
+
+    if (q.precioVenta) {
+      query.andWhere('productos.precioVenta = :precioVenta', {
+        precioVenta: q.precioVenta,
+      });
+    }
+
+    if (q.idCategoria) {
+      query.andWhere('productos.idCategoria = :idCategoria', {
+        idCategoria: q.idCategoria,
+      });
+    }
+
+    if (q.idProveedor) {
+      query.andWhere('productos.idProveedor = :idProveedor', {
+        idProveedor: q.idProveedor,
       });
     }
 
@@ -78,11 +114,6 @@ export class ProductosService {
       });
     }
 
-    if (q.codigo) {
-      query.andWhere('productos.codigo ILIKE :codigo', {
-        codigo: `%${q.codigo}%`,
-      });
-    }
     if (q.sidx) {
       query.orderBy(`productos.id`, q.sord);
     }

@@ -14,6 +14,27 @@ export class QueryProductoDto extends GetPaginationSortParamsDto {
   @IsString()
   readonly nombre?: string;
 
+  @ApiPropertyOptional({ example: 'Taladro inalámbrico' })
+  @IsOptional()
+  @IsString()
+  readonly descripcion?: string;
+
+  @ApiPropertyOptional({ example: 100 })
+  @IsOptional()
+  readonly precioCompra?: number;
+
+  @ApiPropertyOptional({ example: 150 })
+  @IsOptional()
+  readonly precioVenta?: number;
+
+  @ApiPropertyOptional({ example: 1 })
+  @IsOptional()
+  readonly idCategoria?: number;
+
+  @ApiPropertyOptional({ example: 1 })
+  @IsOptional()
+  readonly idProveedor?: number;
+
   @ApiPropertyOptional({ example: true })
   @IsOptional()
   @IsBoolean()
