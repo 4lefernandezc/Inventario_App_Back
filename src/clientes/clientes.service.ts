@@ -45,67 +45,67 @@ export class ClientesService {
     return this.clientesRepository.save(cliente);
   }
 
-  async findAll(q: QueryClienteDto){
-    const { page, limit } = q;
+  async findAll(q: QueryClienteDto) {
+    const { page, limit, nombre, apellido, documento, tipoDocumento, telefono, correo, activo, sidx, sord } = q;
     const query = this.clientesRepository.createQueryBuilder('clientes').select([
-        'clientes.id',
-        'clientes.documento',
-        'clientes.tipoDocumento',
-        'clientes.nombre',
-        'clientes.apellido',
-        'clientes.direccion',
-        'clientes.telefono',
-        'clientes.linkWhatsapp',
-        'clientes.correo',
-        'clientes.activo',
-        'clientes.fechaCreacion',
-        'clientes.fechaModificacion',
-      ])
+      'clientes.id',
+      'clientes.documento',
+      'clientes.tipoDocumento',
+      'clientes.nombre',
+      'clientes.apellido',
+      'clientes.direccion',
+      'clientes.telefono',
+      'clientes.linkWhatsapp',
+      'clientes.correo',
+      'clientes.activo',
+      'clientes.fechaCreacion',
+      'clientes.fechaModificacion',
+    ]);
 
-    if (q.nombre) {
+    if (nombre) {
       query.andWhere('clientes.nombre ILIKE :nombre', {
-        nombre: `%${q.nombre}%`,
+        nombre: `%${nombre}%`,
       });
     }
 
-    if (q.apellido) {
+    if (apellido) {
       query.andWhere('clientes.apellido ILIKE :apellido', {
-        apellido: `%${q.apellido}%`,
+        apellido: `%${apellido}%`,
       });
     }
 
-    if (q.documento) {
+    if (documento) {
       query.andWhere('clientes.documento ILIKE :documento', {
-        documento: `%${q.documento}%`,
+        documento: `%${documento}%`,
       });
     }
 
-    if (q.tipoDocumento) {
+    if (tipoDocumento) {
       query.andWhere('clientes.tipoDocumento ILIKE :tipoDocumento', {
-        tipoDocumento: `%${q.tipoDocumento}%`,
+        tipoDocumento: `%${tipoDocumento}%`,
       });
     }
 
-    if (q.telefono) {
+    if (telefono) {
       query.andWhere('clientes.telefono ILIKE :telefono', {
-        telefono: `%${q.telefono}%`,
+        telefono: `%${telefono}%`,
       });
     }
 
-    if (q.correo) {
+    if (correo) {
       query.andWhere('clientes.correo ILIKE :correo', {
-        correo: `%${q.correo}%`,
+        correo: `%${correo}%`,
       });
     }
 
-    if (q.activo !== undefined) {
+    if (activo !== undefined) {
       query.andWhere('clientes.activo = :activo', {
-        activo: q.activo,
+        activo,
       });
     }
 
-    if (q.sidx) {
-      query.orderBy(`clientes.id`, q.sord);
+    if (sidx) {
+      query.orderBy(`clientes.${sidx}`, sord);
     }
 
     const [result, total] = await query

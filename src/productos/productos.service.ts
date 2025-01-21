@@ -48,8 +48,22 @@ export class ProductosService {
     return this.productosRepository.save(producto);
   }
 
-  async findAll(q: QueryProductoDto){
-    const { page, limit } = q;
+  async findAll(q: QueryProductoDto) {
+    const {
+      page,
+      limit,
+      codigo,
+      nombre,
+      descripcion,
+      precioCompra,
+      precioVenta,
+      idCategoria,
+      idProveedor,
+      activo,
+      sidx,
+      sord,
+    } = q;
+
     const query = this.productosRepository.createQueryBuilder('productos').select([
       'productos.id',
       'productos.codigo',
@@ -66,56 +80,56 @@ export class ProductosService {
     .leftJoinAndSelect('productos.categoria', 'categoria')
     .leftJoinAndSelect('productos.proveedor', 'proveedor');
 
-    if (q.codigo) {
+    if (codigo) {
       query.andWhere('productos.codigo ILIKE :codigo', {
-        codigo: `%${q.codigo}%`,
+        codigo: `%${codigo}%`,
       });
     }
 
-    if (q.nombre) {
+    if (nombre) {
       query.andWhere('productos.nombre ILIKE :nombre', {
-        nombre: `%${q.nombre}%`,
+        nombre: `%${nombre}%`,
       });
     }
 
-    if (q.descripcion) {
+    if (descripcion) {
       query.andWhere('productos.descripcion ILIKE :descripcion', {
-        descripcion: `%${q.descripcion}%`,
+        descripcion: `%${descripcion}%`,
       });
     } 
 
-    if (q.precioCompra) {
+    if (precioCompra) {
       query.andWhere('productos.precioCompra = :precioCompra', {
-        precioCompra: q.precioCompra,
+        precioCompra,
       });
     }
 
-    if (q.precioVenta) {
+    if (precioVenta) {
       query.andWhere('productos.precioVenta = :precioVenta', {
-        precioVenta: q.precioVenta,
+        precioVenta,
       });
     }
 
-    if (q.idCategoria) {
+    if (idCategoria) {
       query.andWhere('productos.idCategoria = :idCategoria', {
-        idCategoria: q.idCategoria,
+        idCategoria,
       });
     }
 
-    if (q.idProveedor) {
+    if (idProveedor) {
       query.andWhere('productos.idProveedor = :idProveedor', {
-        idProveedor: q.idProveedor,
+        idProveedor,
       });
     }
 
-    if (q.activo !== undefined) {
+    if (activo !== undefined) {
       query.andWhere('productos.activo = :activo', {
-        activo: q.activo,
+        activo,
       });
     }
 
-    if (q.sidx) {
-      query.orderBy(`productos.id`, q.sord);
+    if (sidx) {
+      query.orderBy(`productos.${sidx}`, sord);
     }
 
     const [result, total] = await query

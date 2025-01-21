@@ -53,8 +53,8 @@ export class UsuariosService {
     return this.usuariosRepository.save(nuevoUsuario);
   }
 
-  async findAll(q: QueryUsuarioDto){
-    const { page, limit } = q;
+  async findAll(q: QueryUsuarioDto) {
+    const { page, limit, usuario, nombre, apellido, activo, sidx, sord } = q;
     const query = this.usuariosRepository.createQueryBuilder('usuarios').select([
       'usuarios.id',
       'usuarios.usuario',
@@ -69,34 +69,34 @@ export class UsuariosService {
       'usuarios.fechaModificacion',
     ])
     .innerJoin('usuarios.rol', 'rol')
-    .innerJoin('usuarios.sucursal', 'sucursal')
+    .innerJoin('usuarios.sucursal', 'sucursal');
 
-    if (q.usuario) {
+    if (usuario) {
       query.andWhere('usuarios.usuario ILIKE :usuario', {
-        usuario: `%${q.usuario}%`,
+        usuario: `%${usuario}%`,
       });
     }
     
-    if (q.nombre) {
+    if (nombre) {
       query.andWhere('usuarios.nombre ILIKE :nombre', {
-        nombre: `%${q.nombre}%`,
+        nombre: `%${nombre}%`,
       });
     }
 
-    if (q.apellido) {
+    if (apellido) {
       query.andWhere('usuarios.apellido ILIKE :apellido', {
-        apellido: `%${q.apellido}%`,
+        apellido: `%${apellido}%`,
       });
     }
 
-    if (q.activo !== undefined) {
+    if (activo !== undefined) {
       query.andWhere('usuarios.activo = :activo', {
-        activo: q.activo,
+        activo,
       });
     }
 
-    if (q.sidx) {
-      query.orderBy(`usuarios.id`, q.sord);
+    if (sidx) {
+      query.orderBy(`usuarios.${sidx}`, sord);
     }
 
     const [result, total] = await query
