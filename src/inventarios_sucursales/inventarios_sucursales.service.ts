@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateInventarioSucursalDto } from './dto/create-inventario_sucursal.dto';
 import { UpdateInventarioSucursalDto } from './dto/update-inventario_sucursal.dto';
 import { InventarioSucursal } from './entities/inventario_sucursal.entity';
+import { QueryInventarioSucursalDto } from './dto/query-inventario_sucursal.dto';
 
 @Injectable()
 export class InventariosSucursalesService {
@@ -21,10 +22,85 @@ export class InventariosSucursalesService {
     return this.inventariosRepository.save(nuevoInventario);
   }
 
-  async findAll(): Promise<InventarioSucursal[]> {
-    return this.inventariosRepository.find({
-      relations: ['producto', 'sucursal'],
-    });
+  async findAll(q: QueryInventarioSucursalDto) {
+    const {
+      page,
+      limit,
+      idProducto,
+      idSucursal,
+      stockActual,
+      stockMinimo,
+      stockMaximo,
+      tipoUnidad,
+      sidx,
+      sord,
+    } = q;
+
+    const query = this.inventariosRepository.createQueryBuilder('inventarios_sucursales').select([
+      'inventarios_sucursales.id',
+      'inventarios_sucursales.idProducto',
+      'inventarios_sucursales.idSucursal',
+      'inventarios_sucursales.stockActual',
+      'inventarios_sucursales.stockMinimo',
+      'inventarios_sucursales.stockMaximo',
+      'inventarios_sucursales.tipoUnidad',
+      'inventarios_sucursales.fechaCreacion',
+      'inventarios_sucursales.fechaModificacion',
+    ])
+    .leftJoinAndSelect('inventarios_sucursales.producto', 'producto')
+    .leftJoinAndSelect('inventarios_sucursales.sucursal', 'sucursal');
+
+    if (idProducto) {
+      query.andWhere('inventarios_sucursales.idProducto = :idProducto', {
+        idProducto,
+      });
+    }
+
+    if (idSucursal) {
+      query.andWhere('inventarios_sucursales.idSucursal = :idSucursal', {
+        idSucursal,
+      });
+    }
+
+    if (stockActual) {
+      query.andWhere('inventarios_sucursales.stockActual = :stockActual', {
+        stockActual,
+      });
+    }
+
+    if (stockMinimo) {
+      query.andWhere('inventarios_sucursales.stockMinimo = :stockMinimo', {
+        stockMinimo,
+      });
+    }
+
+    if (stockMaximo) {
+      query.andWhere('inventarios_sucursales.stockMaximo = :stockMaximo', {
+        stockMaximo,
+      });
+    }
+
+    if (tipoUnidad) {
+      query.andWhere('inventarios_sucursales.tipoUnidad ILIKE :tipoUnidad', {
+        tipoUnidad: `%${tipoUnidad}%`,
+      });
+    }
+
+    if (sidx) {
+      query.orderBy(`inventarios_sucursales.${sidx}`, sord);
+    }
+
+    const [result, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: result,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: number): Promise<InventarioSucursal> {
@@ -36,19 +112,6 @@ export class InventariosSucursalesService {
       throw new NotFoundException(`Inventario con ID ${id} no encontrado`);
     }
     return inventario;
-  }
-
-  async findBySucursal(idSucursal: number): Promise<InventarioSucursal[]> {
-    const inventarios = await this.inventariosRepository.find({
-      where: { idSucursal },
-      relations: ['producto'],
-    });
-    if (!inventarios.length) {
-      throw new NotFoundException(
-        `No se encontró inventario para la sucursal con ID ${idSucursal}`,
-      );
-    }
-    return inventarios;
   }
 
   async update(
