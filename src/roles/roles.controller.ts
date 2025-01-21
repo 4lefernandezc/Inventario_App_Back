@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRolDto } from './dto/create-rol.dto';
 import { UpdateRolDto } from './dto/update-rol.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { QueryRolDto } from './dto/query-rol.dto';
 
 @ApiTags('Roles')
 @ApiBearerAuth()
@@ -18,8 +19,8 @@ export class RolesController {
   }
 
   @Get()
-  findAll() {
-    return this.rolesService.findAll();
+  findAll(@Query() query: QueryRolDto) {
+    return this.rolesService.findAll(query);
   }
 
   @Get(':id')

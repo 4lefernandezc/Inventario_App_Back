@@ -8,6 +8,7 @@ import { UpdateRolDto } from './dto/update-rol.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Rol } from './entities/rol.entity';
 import { Repository } from 'typeorm';
+import { QueryRolDto } from './dto/query-rol.dto';
 
 @Injectable()
 export class RolesService {
@@ -31,8 +32,43 @@ export class RolesService {
     return this.rolesRepository.save(newRol);
   }
 
-  async findAll(): Promise<Rol[]> {
-    return this.rolesRepository.find();
+  async findAll(q: QueryRolDto) {
+    const { page, limit, nombre, descripcion, sidx, sord } = q;
+    const query = this.rolesRepository.createQueryBuilder('roles').select([
+      'roles.id',
+      'roles.nombre',
+      'roles.descripcion',
+      'roles.fechaCreacion',
+      'roles.fechaModificacion',
+    ]);
+
+    if (nombre) {
+      query.andWhere('roles.nombre ILIKE :nombre', {
+        nombre: `%${nombre}%`,
+      });
+    }
+
+    if (descripcion) {
+      query.andWhere('roles.descripcion ILIKE :descripcion', {
+        descripcion: `%${descripcion}%`,
+      });
+    }
+
+    if (sidx) {
+      query.orderBy(`roles.${sidx}`, sord);
+    }
+
+    const [result, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: result,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: number): Promise<Rol> {
