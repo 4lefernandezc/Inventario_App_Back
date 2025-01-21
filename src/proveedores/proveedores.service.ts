@@ -8,6 +8,7 @@ import { UpdateProveedorDto } from './dto/update-proveedore.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Proveedor } from './entities/proveedor.entity';
 import { Repository } from 'typeorm';
+import { QueryProveedorDto } from './dto/query-proveedor.dto';
 
 @Injectable()
 export class ProveedoresService {
@@ -43,8 +44,72 @@ export class ProveedoresService {
     return this.proveedoresRepository.save(proveedor);
   }
 
-  async findAll(): Promise<Proveedor[]> {
-    return this.proveedoresRepository.find();
+  async findAll(q: QueryProveedorDto){
+    const { page, limit, nombre, nit, telefono, direccion, correo, activo, sidx, sord } = q;
+    const query = this.proveedoresRepository.createQueryBuilder('proveedores').select([
+      'proveedores.id',
+      'proveedores.nombre',
+      'proveedores.nit',
+      'proveedores.telefono',
+      'proveedores.direccion',
+      'proveedores.correo',
+      'proveedores.activo',
+      'proveedores.linkWhatsapp',
+      'proveedores.fechaCreacion',
+      'proveedores.fechaModificacion',
+    ]);
+
+    if (nombre) {
+      query.andWhere('proveedores.nombre ILIKE :nombre', {
+        nombre: `%${nombre}%`,
+      });
+    }
+
+    if (nit) {
+      query.andWhere('proveedores.nit ILIKE :nit', {
+        nit: `%${nit}%`,
+      });
+    }
+
+    if (telefono) {
+      query.andWhere('proveedores.telefono ILIKE :telefono', {
+        telefono: `%${telefono}%`,
+      });
+    }
+
+    if (direccion) {
+      query.andWhere('proveedores.direccion ILIKE :direccion', {
+        direccion: `%${direccion}%`,
+      });
+    }
+
+    if (correo) {
+      query.andWhere('proveedores.correo ILIKE :correo', {
+        correo: `%${correo}%`,
+      });
+    }
+
+    if (activo) {
+      query.andWhere('proveedores.activo = :activo', {
+        activo: activo,
+      });
+    }
+
+    if (sidx) {
+      query.orderBy(`proveedores.${sidx}`, sord);
+    }
+
+    const [result, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: result,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: number): Promise<Proveedor> {

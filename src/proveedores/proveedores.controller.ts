@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ProveedoresService } from './proveedores.service';
 import { CreateProveedorDto } from './dto/create-proveedor.dto';
 import { UpdateProveedorDto } from './dto/update-proveedore.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { QueryProveedorDto } from './dto/query-proveedor.dto';
 
 @ApiTags('Proveedores')
 @ApiBearerAuth()
@@ -18,8 +19,8 @@ export class ProveedoresController {
   }
 
   @Get()
-  findAll() {
-    return this.proveedoresService.findAll();
+  findAll(@Query() query: QueryProveedorDto) {
+    return this.proveedoresService.findAll(query);
   }
 
   @Get(':id')
