@@ -8,6 +8,7 @@ import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Sucursal } from './entities/sucursal.entity';
 import { Repository } from 'typeorm';
+import { QuerySucursalDto } from './dto/query-sucursal.dto';
 
 @Injectable()
 export class SucursalesService {
@@ -46,8 +47,64 @@ export class SucursalesService {
     return this.sucursalesRepository.save(sucursal);
   }
 
-  async findAll(): Promise<Sucursal[]> {
-    return this.sucursalesRepository.find();
+  async findAll(q: QuerySucursalDto){
+    const { page, limit, nombre, telefono, direccion, correo, activo, sidx, sord } = q;
+    const query = this.sucursalesRepository.createQueryBuilder('sucursales').select([
+      'sucursales.id',
+      'sucursales.nombre',
+      'sucursales.telefono',
+      'sucursales.direccion',
+      'sucursales.correo',
+      'sucursales.activo',
+      'sucursales.fechaCreacion',
+      'sucursales.fechaModificacion',
+    ]);
+
+    if (nombre) {
+      query.andWhere('sucursales.nombre LIKE :nombre', { 
+        nombre: `%${nombre}%`, 
+      });
+    }
+
+    if (telefono) {
+      query.andWhere('sucursales.telefono LIKE :telefono', { 
+        telefono: `%${telefono}%`, 
+      });
+    }
+
+    if (direccion) {
+      query.andWhere('sucursales.direccion LIKE :direccion', { 
+        direccion: `%${direccion}%`, 
+      });
+    }
+
+    if (correo) {
+      query.andWhere('sucursales.correo LIKE :correo', { 
+        correo: `%${correo}%`, 
+      });
+    }
+
+    if (activo) {
+      query.andWhere('sucursales.activo = :activo', {
+        activo: activo,
+      });
+    }
+
+    if (sidx) {
+      query.orderBy(`sucursales.${sidx}`, sord);
+    }
+
+    const [result, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: result,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: number): Promise<Sucursal> {

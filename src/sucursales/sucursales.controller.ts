@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { SucursalesService } from './sucursales.service';
 import { CreateSucursalDto } from './dto/create-sucursal.dto';
 import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { QuerySucursalDto } from './dto/query-sucursal.dto';
 
 @ApiTags('Sucursales')
 @ApiBearerAuth()
@@ -18,8 +19,8 @@ export class SucursalesController {
   }
 
   @Get()
-  findAll() {
-    return this.sucursalesService.findAll();
+  findAll(@Query() query: QuerySucursalDto) {
+    return this.sucursalesService.findAll(query);
   }
 
   @Get(':id')
