@@ -8,6 +8,7 @@ import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Categoria } from './entities/categoria.entity';
 import { Repository } from 'typeorm';
+import { QueryCategoriaDto } from './dto/query-categoria.dto';
 
 @Injectable()
 export class CategoriasService {
@@ -30,8 +31,50 @@ export class CategoriasService {
     return this.categoriasRepository.save(categoria);
   }
 
-  async findAll(): Promise<Categoria[]> {
-    return this.categoriasRepository.find();
+  async findAll(q: QueryCategoriaDto) {
+    const { page, limit, nombre, descripcion, activo, sidx, sord } = q;
+    const query = this.categoriasRepository.createQueryBuilder('categorias').select([
+      'categorias.id',
+      'categorias.nombre',
+      'categorias.descripcion',
+      'categorias.activo',
+      'categorias.fechaCreacion',
+      'categorias.fechaModificacion',
+    ]);
+
+    if (nombre) {
+      query.andWhere('categorias.nombre ILIKE :nombre', {
+        nombre: `%${nombre}%`,
+      });
+    }
+
+    if (descripcion) {
+      query.andWhere('categorias.descripcion ILIKE :descripcion', {
+        descripcion: `%${descripcion}%`,
+      });
+    }
+
+    if (activo !== undefined) {
+      query.andWhere('categorias.activo = :activo', {
+        activo,
+      });
+    }
+
+    if (sidx) {
+      query.orderBy(`categorias.${sidx}`, sord);
+    }
+
+    const [result, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: result,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: number): Promise<Categoria> {
