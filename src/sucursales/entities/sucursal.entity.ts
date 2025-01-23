@@ -1,8 +1,5 @@
-import { Caja } from 'src/cajas/entities/caja.entity';
-import { Compra } from 'src/compras/entities/compra.entity';
 import { InventarioSucursal } from 'src/inventarios_sucursales/entities/inventario_sucursal.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
-import { Venta } from 'src/ventas/entities/venta.entity';
 import {
   Column,
   CreateDateColumn,
@@ -43,13 +40,4 @@ export class Sucursal {
 
   @OneToMany(() => InventarioSucursal, (inventarios) => inventarios.producto)
   inventarios: InventarioSucursal[];
-
-  @OneToMany(() => Venta, (venta) => venta.sucursal)
-  ventas: Venta[];
-
-  @OneToMany(() => Compra, (compra) => compra.sucursal)
-  compras: Compra[];
-
-  @OneToMany(() => Caja, (caja) => caja.sucursal)
-  cajas: Caja[];
 }

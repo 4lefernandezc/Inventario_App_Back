@@ -13,10 +13,6 @@ import {
 import * as bcrypt from 'bcrypt';
 import { Rol } from 'src/roles/entities/rol.entity';
 import { Sucursal } from 'src/sucursales/entities/sucursal.entity';
-import { Venta } from 'src/ventas/entities/venta.entity';
-import { Compra } from 'src/compras/entities/compra.entity';
-import { Caja } from 'src/cajas/entities/caja.entity';
-
 @Entity('usuarios')
 export class Usuario {
   @PrimaryGeneratedColumn('identity')
@@ -33,6 +29,9 @@ export class Usuario {
 
   @Column('varchar', { length: 255, nullable: true })
   correo?: string;
+
+  @Column('varchar', { length: 20, nullable: true })
+  telefono?: string;
 
   @Column('varchar', { length: 255, select: false })
   clave: string;
@@ -65,18 +64,6 @@ export class Usuario {
   })
   @JoinColumn({ name: 'sucursal_id' })
   sucursal: Sucursal;
-
-  @OneToMany(() => Venta, (venta) => venta.usuario)
-  ventas: Venta[];
-
-  @OneToMany(() => Compra, (compra) => compra.usuario)
-  compras: Compra[];
-
-  @OneToMany(() => Caja, (caja) => caja.usuarioApertura)
-  cajasApertura: Caja[];
-
-  @OneToMany(() => Caja, (caja) => caja.usuarioCierre)
-  cajasCierre: Caja[];
 
   @BeforeInsert()
   @BeforeUpdate()

@@ -1,4 +1,3 @@
-import { Compra } from 'src/compras/entities/compra.entity';
 import { Producto } from 'src/productos/entities/producto.entity';
 import {
   Column,
@@ -43,7 +42,4 @@ export class Proveedor {
 
   @OneToMany(() => Producto, (producto) => producto.categoria)
   productos: Producto[];
-
-  @OneToMany(() => Compra, (compra) => compra.sucursal)
-  compras: Compra[];
 }

@@ -15,10 +15,10 @@ async function bootstrap() {
   app.enableCors();
 
   const config = new DocumentBuilder()
-    .setTitle('API Comercial Franco')
-    .setDescription('API Rest Sistema de Ventas e Inventario Comercial Franco')
+    .setTitle('API Inventario NOVA 2025')
+    .setDescription('API Rest Sistema de Inventario NOVA 2025')
     .setVersion('1.0')
-    .addTag('Categorias, Productos, Clientes, Proveedores, Sucursales, Inventarios-Sucursales, Ventas, Compras, Roles, Usuarios, Auth') // Agregar etiquetas
+    .addTag('Categorias, Productos, Clientes, Proveedores, Sucursales, Inventarios-Sucursales, Roles, Usuarios, Auth') // Agregar etiquetas
     .addBearerAuth({
       type: 'http',
       scheme: 'bearer',

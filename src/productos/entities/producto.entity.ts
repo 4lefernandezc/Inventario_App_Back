@@ -1,8 +1,6 @@
 import { Proveedor } from 'src/proveedores/entities/proveedor.entity';
 import { Categoria } from 'src/categorias/entities/categoria.entity';
 import { InventarioSucursal } from 'src/inventarios_sucursales/entities/inventario_sucursal.entity';
-import { DetalleVenta } from 'src/ventas/entities/detalle_venta.entity';
-import { DetalleCompra } from 'src/compras/entities/detalle_compra.entity';
 import {
   Column,
   CreateDateColumn,
@@ -62,10 +60,4 @@ export class Producto {
     (inventarioSucursal) => inventarioSucursal.producto,
   )
   inventarios: InventarioSucursal[];
-
-  @OneToMany(() => DetalleVenta, (detalleventa) => detalleventa.producto)
-  detalles: DetalleVenta[];
-
-  @OneToMany(() => DetalleCompra, (detalleCompra) => detalleCompra.producto)
-  detallesCompra: DetalleCompra[];
 }

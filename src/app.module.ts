@@ -12,9 +12,6 @@ import { AuthModule } from './auth/auth.module';
 import { SucursalesModule } from './sucursales/sucursales.module';
 import { ProductosModule } from './productos/productos.module';
 import { InventariosSucursalesModule } from './inventarios_sucursales/inventarios_sucursales.module';
-import { VentasModule } from './ventas/ventas.module';
-import { ComprasModule } from './compras/compras.module';
-import { CajasModule } from './cajas/cajas.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -38,9 +35,6 @@ import { CajasModule } from './cajas/cajas.module';
     SucursalesModule,
     ProductosModule,
     InventariosSucursalesModule,
-    VentasModule,
-    ComprasModule,
-    CajasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
