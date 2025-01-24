@@ -12,9 +12,9 @@ import {
 
 export class CreateInventarioSucursalDto {
   @ApiProperty()
-  @IsDefined({ message: 'El campo id_producto debe estar definido' })
-  @IsNumber({}, { message: 'El campo id_producto debe ser de tipo numérico' })
-  readonly idProducto: number;
+  @IsDefined({ message: 'El campo id_ingrediente debe estar definido' })
+  @IsNumber({}, { message: 'El campo id_ingrediente debe ser de tipo numérico' })
+  readonly idIngrediente: number;
 
   @ApiProperty()
   @IsDefined({ message: 'El campo id_sucursal debe estar definido' })

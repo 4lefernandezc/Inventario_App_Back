@@ -1,4 +1,4 @@
-import { Producto } from 'src/productos/entities/producto.entity';
+import { Ingrediente } from 'src/ingredientes/entities/ingrediente.entity';
 import {
   Column,
   CreateDateColumn,
@@ -40,6 +40,6 @@ export class Proveedor {
   @UpdateDateColumn({ name: 'fecha_modificacion' })
   fechaModificacion: Date;
 
-  @OneToMany(() => Producto, (producto) => producto.categoria)
-  productos: Producto[];
+  @OneToMany(() => Ingrediente, (ingrediente) => ingrediente.proveedor)
+  ingredientes: Ingrediente[];
 }

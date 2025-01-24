@@ -13,6 +13,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { Rol } from 'src/roles/entities/rol.entity';
 import { Sucursal } from 'src/sucursales/entities/sucursal.entity';
+import { MovimientoInventario } from 'src/movimientos_inventarios/entities/movimientos_inventario.entity';
 @Entity('usuarios')
 export class Usuario {
   @PrimaryGeneratedColumn('identity')
@@ -64,6 +65,9 @@ export class Usuario {
   })
   @JoinColumn({ name: 'sucursal_id' })
   sucursal: Sucursal;
+
+  @OneToMany(() => MovimientoInventario, (movimiento) => movimiento.usuario)
+  movimientos: MovimientoInventario[];
 
   @BeforeInsert()
   @BeforeUpdate()

@@ -1,24 +1,40 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateInventarioSucursalDto } from './dto/create-inventario_sucursal.dto';
 import { UpdateInventarioSucursalDto } from './dto/update-inventario_sucursal.dto';
 import { InventarioSucursal } from './entities/inventario_sucursal.entity';
 import { QueryInventarioSucursalDto } from './dto/query-inventario_sucursal.dto';
+import { Ingrediente } from 'src/ingredientes/entities/ingrediente.entity';
+import { Sucursal } from 'src/sucursales/entities/sucursal.entity';
 
 @Injectable()
 export class InventariosSucursalesService {
   constructor(
     @InjectRepository(InventarioSucursal)
     private readonly inventariosRepository: Repository<InventarioSucursal>,
+    @InjectRepository(Ingrediente)
+    private readonly ingredientesRepository: Repository<Ingrediente>,
+    @InjectRepository(Sucursal)
+    private readonly sucursalesRepository: Repository<Sucursal>,
   ) {}
 
   async create(
     createInventarioSucursalDto: CreateInventarioSucursalDto,
   ): Promise<InventarioSucursal> {
-    const nuevoInventario = this.inventariosRepository.create(
-      createInventarioSucursalDto,
-    );
+    const { idIngrediente, idSucursal } = createInventarioSucursalDto;
+
+    const ingrediente = await this.ingredientesRepository.findOne({ where: { id: idIngrediente } });
+    if (!ingrediente) {
+      throw new NotFoundException(`Ingrediente con ID ${idIngrediente} no encontrado`);
+    }
+    
+    const sucursal = await this.sucursalesRepository.findOne({ where: { id: idSucursal } });
+    if (!sucursal) {
+      throw new NotFoundException(`Sucursal con ID ${idSucursal} no encontrada`);
+    }
+
+    const nuevoInventario = this.inventariosRepository.create(createInventarioSucursalDto);
     return this.inventariosRepository.save(nuevoInventario);
   }
 
@@ -26,7 +42,7 @@ export class InventariosSucursalesService {
     const {
       page,
       limit,
-      idProducto,
+      idIngrediente,
       idSucursal,
       stockActual,
       stockMinimo,
@@ -38,7 +54,7 @@ export class InventariosSucursalesService {
 
     const query = this.inventariosRepository.createQueryBuilder('inventarios_sucursales').select([
       'inventarios_sucursales.id',
-      'inventarios_sucursales.idProducto',
+      'inventarios_sucursales.idIngrediente',
       'inventarios_sucursales.idSucursal',
       'inventarios_sucursales.stockActual',
       'inventarios_sucursales.stockMinimo',
@@ -47,12 +63,12 @@ export class InventariosSucursalesService {
       'inventarios_sucursales.fechaCreacion',
       'inventarios_sucursales.fechaModificacion',
     ])
-    .leftJoinAndSelect('inventarios_sucursales.producto', 'producto')
+    .leftJoinAndSelect('inventarios_sucursales.ingrediente', 'ingrediente')
     .leftJoinAndSelect('inventarios_sucursales.sucursal', 'sucursal');
 
-    if (idProducto) {
-      query.andWhere('inventarios_sucursales.idProducto = :idProducto', {
-        idProducto,
+    if (idIngrediente) {
+      query.andWhere('inventarios_sucursales.idIngrediente = :idIngrediente', {
+        idIngrediente,
       });
     }
 
@@ -106,7 +122,7 @@ export class InventariosSucursalesService {
   async findOne(id: number): Promise<InventarioSucursal> {
     const inventario = await this.inventariosRepository.findOne({
       where: { id },
-      relations: ['producto', 'sucursal'],
+      relations: ['ingrediente', 'sucursal'],
     });
     if (!inventario) {
       throw new NotFoundException(`Inventario con ID ${id} no encontrado`);
@@ -119,8 +135,8 @@ export class InventariosSucursalesService {
     updateInventarioSucursalDto: UpdateInventarioSucursalDto,
   ): Promise<{ message: string; inventario: InventarioSucursal }> {
     const inventario = await this.findOne(id);
-    if (updateInventarioSucursalDto.idProducto) {
-      inventario.idProducto = updateInventarioSucursalDto.idProducto;
+    if (updateInventarioSucursalDto.idIngrediente) {
+      inventario.idIngrediente = updateInventarioSucursalDto.idIngrediente;
     }
     if (updateInventarioSucursalDto.idSucursal) {
       inventario.idSucursal = updateInventarioSucursalDto.idSucursal;

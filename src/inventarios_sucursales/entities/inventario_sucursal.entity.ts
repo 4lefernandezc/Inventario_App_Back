@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Producto } from 'src/productos/entities/producto.entity';
+import { Ingrediente } from 'src/ingredientes/entities/ingrediente.entity';
 import { Sucursal } from 'src/sucursales/entities/sucursal.entity';
 
 @Entity('inventarios_sucursales')
@@ -15,8 +15,8 @@ export class InventarioSucursal {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @Column('integer', { name: 'id_producto' })
-  idProducto: number;
+  @Column('integer', { name: 'id_ingrediente' })
+  idIngrediente: number;
 
   @Column('integer', { name: 'id_sucursal' })
   idSucursal: number;
@@ -39,9 +39,9 @@ export class InventarioSucursal {
   @UpdateDateColumn({ name: 'fecha_modificacion' })
   fechaModificacion: Date;
 
-  @ManyToOne(() => Producto, (producto) => producto.inventarios)
-  @JoinColumn({ name: 'id_producto', referencedColumnName: 'id' })
-  producto: Producto;
+  @ManyToOne(() => Ingrediente, (ingrediente) => ingrediente.inventarios)
+  @JoinColumn({ name: 'id_ingrediente', referencedColumnName: 'id' })
+  ingrediente: Ingrediente;
 
   @ManyToOne(() => Sucursal, (sucursal) => sucursal.inventarios)
   @JoinColumn({ name: 'id_sucursal', referencedColumnName: 'id' })

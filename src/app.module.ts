@@ -4,14 +4,13 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from './roles/roles.module';
-import { CategoriasModule } from './categorias/categorias.module';
 import { ProveedoresModule } from './proveedores/proveedores.module';
-import { ClientesModule } from './clientes/clientes.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
 import { SucursalesModule } from './sucursales/sucursales.module';
-import { ProductosModule } from './productos/productos.module';
+import { ProductosModule } from './ingredientes/ingredientes.module';
 import { InventariosSucursalesModule } from './inventarios_sucursales/inventarios_sucursales.module';
+import { MovimientosInventariosModule } from './movimientos_inventarios/movimientos_inventarios.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -27,14 +26,13 @@ import { InventariosSucursalesModule } from './inventarios_sucursales/inventario
       autoLoadEntities: true,
     }),
     RolesModule,
-    CategoriasModule,
     ProveedoresModule,
-    ClientesModule,
     UsuariosModule,
     AuthModule,
     SucursalesModule,
     ProductosModule,
     InventariosSucursalesModule,
+    MovimientosInventariosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

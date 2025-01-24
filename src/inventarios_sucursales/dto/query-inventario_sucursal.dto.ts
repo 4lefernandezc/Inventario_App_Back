@@ -5,7 +5,7 @@ import { GetPaginationSortParamsDto } from 'src/common/dto/get-pagination-sort-p
 export class QueryInventarioSucursalDto extends GetPaginationSortParamsDto {
   @ApiPropertyOptional({ example: 1 })
   @IsOptional()
-  readonly idProducto?: number;
+  readonly idIngrediente?: number;
 
   @ApiPropertyOptional({ example: 1 })
   @IsOptional()
