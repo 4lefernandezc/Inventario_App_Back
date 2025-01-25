@@ -48,7 +48,6 @@ export class IngredientesService {
     ingrediente.nombre = createProductoDto.nombre.trim();
     ingrediente.descripcion = createProductoDto.descripcion?.trim() || null;
     ingrediente.precioCompra = createProductoDto.precioCompra;
-    ingrediente.precioVenta = createProductoDto.precioVenta;
     ingrediente.activo = createProductoDto.activo;
     ingrediente.proveedor = proveedorExiste;
     return this.productosRepository.save(ingrediente);
@@ -62,7 +61,6 @@ export class IngredientesService {
       nombre,
       descripcion,
       precioCompra,
-      precioVenta,
       idProveedor,
       activo,
       sidx,
@@ -75,7 +73,6 @@ export class IngredientesService {
       'ingredientes.nombre',
       'ingredientes.descripcion',
       'ingredientes.precioCompra',
-      'ingredientes.precioVenta',
       'ingredientes.activo',
       'ingredientes.idProveedor',
       'ingredientes.fechaCreacion',
@@ -104,12 +101,6 @@ export class IngredientesService {
     if (precioCompra) {
       query.andWhere('ingredientes.precioCompra = :precioCompra', {
         precioCompra,
-      });
-    }
-
-    if (precioVenta) {
-      query.andWhere('ingredientes.precioVenta = :precioVenta', {
-        precioVenta,
       });
     }
 

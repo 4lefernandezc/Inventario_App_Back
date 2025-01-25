@@ -6,7 +6,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+  }));
   app.setGlobalPrefix('api');
   app.enableVersioning({
     type: VersioningType.URI,
@@ -18,7 +22,7 @@ async function bootstrap() {
     .setTitle('API Inventario NOVA 2025')
     .setDescription('API Rest Sistema de Inventario NOVA 2025')
     .setVersion('1.0')
-    // .addTag('Categorias, Ingredientes, Clientes, Proveedores, Sucursales, Inventarios-Sucursales, Roles, Usuarios, Auth') // Agregar etiquetas
+    .addTag('Inventario')
     .addBearerAuth({
       type: 'http',
       scheme: 'bearer',

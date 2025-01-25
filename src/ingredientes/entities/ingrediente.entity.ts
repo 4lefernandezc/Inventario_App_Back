@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { DetalleReceta } from 'src/recetas/entities/detalle_receta.entity';
 
 @Entity('ingredientes')
 export class Ingrediente {
@@ -28,9 +29,6 @@ export class Ingrediente {
 
   @Column('decimal', { precision: 10, scale: 2, name: 'precio_compra' })
   precioCompra: number;
-
-  @Column('decimal', { precision: 10, scale: 2, name: 'precio_venta' })
-  precioVenta: number;
 
   @Column('boolean')
   activo: boolean;
@@ -56,4 +54,9 @@ export class Ingrediente {
 
   @OneToMany(() => MovimientoInventario, (movimiento) => movimiento.usuario)
   movimientos: MovimientoInventario[];
+
+  @OneToMany(() => DetalleReceta, (detalleReceta) => detalleReceta.receta, {
+    cascade: true,
+  })
+  detallesReceta: DetalleReceta[];
 }

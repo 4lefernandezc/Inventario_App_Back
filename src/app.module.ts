@@ -11,6 +11,7 @@ import { SucursalesModule } from './sucursales/sucursales.module';
 import { ProductosModule } from './ingredientes/ingredientes.module';
 import { InventariosSucursalesModule } from './inventarios_sucursales/inventarios_sucursales.module';
 import { MovimientosInventariosModule } from './movimientos_inventarios/movimientos_inventarios.module';
+import { RecetasModule } from './recetas/recetas.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -21,7 +22,7 @@ import { MovimientosInventariosModule } from './movimientos_inventarios/movimien
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [__dirname + '/**/*.entities/*.{ts|js}'],
+      entities: [__dirname + '/**/*.entity.{ts,js}'],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -33,6 +34,7 @@ import { MovimientosInventariosModule } from './movimientos_inventarios/movimien
     ProductosModule,
     InventariosSucursalesModule,
     MovimientosInventariosModule,
+    RecetasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

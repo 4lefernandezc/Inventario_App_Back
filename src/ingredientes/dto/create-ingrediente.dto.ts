@@ -40,11 +40,6 @@ export class CreateProductoDto {
   readonly precioCompra: number;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'El campo precio_venta es obligatorio' })
-  @IsNumber({}, { message: 'El campo precio_venta debe ser de tipo numero' })
-  readonly precioVenta: number;
-
-  @ApiProperty()
   @IsNotEmpty({ message: 'El campo activo no debe ser vacío' })
   @IsBoolean({ message: 'El campo activo debe ser de tipo booleano' })
   readonly activo: boolean;
