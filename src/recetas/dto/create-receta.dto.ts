@@ -23,7 +23,10 @@ export class CreateRecetaDto {
   @IsNumber({}, { message: 'El campo precioBase debe ser numérico' })
   readonly precioBase: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: [DetalleRecetaCreateDto],
+    description: 'Detalles de los ingredientes de la receta',
+  })
   @ArrayNotEmpty({ message: 'Debe incluir al menos un detalle de ingrediente' })
   @ValidateNested({ each: true })
   @Type(() => DetalleRecetaCreateDto)

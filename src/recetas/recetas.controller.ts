@@ -9,7 +9,7 @@ import {
   Query, 
   UseGuards 
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { RecetasService } from './recetas.service';
 import { CreateRecetaDto } from './dto/create-receta.dto';
 import { UpdateRecetaDto } from './dto/update-receta.dto';
@@ -24,6 +24,10 @@ export class RecetasController {
   constructor(private readonly recetasService: RecetasService) {}
 
   @Post()
+  @ApiBody({
+    type: CreateRecetaDto,
+    description: 'Cuerpo de la solicitud para crear una nueva receta',
+  })
   create(@Body() createRecetaDto: CreateRecetaDto) {
     return this.recetasService.create(createRecetaDto);
   }

@@ -3,7 +3,7 @@ import { IsOptional, IsString, IsNumber } from 'class-validator';
 import { GetPaginationSortParamsDto } from 'src/common/dto/get-pagination-sort-params.dto';
 
 export class QueryRecetaDto extends GetPaginationSortParamsDto {
-  @ApiPropertyOptional({ example: 'Pizza Margherita' })
+  @ApiPropertyOptional({ example: 'Torta Personalizada de Chocolate' })
   @IsOptional()
   @IsString()
   readonly nombre?: string;
