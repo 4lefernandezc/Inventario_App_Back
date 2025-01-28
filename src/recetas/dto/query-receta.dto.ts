@@ -12,4 +12,8 @@ export class QueryRecetaDto extends GetPaginationSortParamsDto {
   @IsOptional()
   @IsNumber()
   readonly precioBase?: number;
+
+  @ApiPropertyOptional({ example: 1 })
+  @IsOptional()
+  readonly idCliente?: number;
 }

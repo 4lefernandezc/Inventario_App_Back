@@ -23,6 +23,11 @@ export class CreateRecetaDto {
   @IsNumber({}, { message: 'El campo precioBase debe ser numérico' })
   readonly precioBase: number;
 
+  @ApiProperty({ example: 1 })
+  @IsNotEmpty({ message: 'El campo idCliente es obligatorio' })
+  @IsNumber({}, { message: 'El campo idCliente debe ser numérico' })
+  readonly idCliente: number;
+
   @ApiProperty({
     type: [DetalleRecetaCreateDto],
     description: 'Detalles de los ingredientes de la receta',

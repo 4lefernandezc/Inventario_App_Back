@@ -1,8 +1,11 @@
+import { Cliente } from 'src/clientes/entities/cliente.entity';
 import { DetalleReceta } from './detalle_receta.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -25,6 +28,9 @@ export class Receta {
   @Column('decimal', { precision: 10, scale: 2, name: 'monto_total', nullable: true })
   montoTotal?: number;
 
+  @Column('int', { name: 'id_cliente' })
+  idCliente: number;
+
   @CreateDateColumn({ name: 'fecha_creacion' })
   fechaCreacion: Date;
 
@@ -33,4 +39,8 @@ export class Receta {
 
   @OneToMany(() => DetalleReceta, (detalleReceta) => detalleReceta.receta, { cascade: true })
   detallesReceta: DetalleReceta[];
+
+  @ManyToOne(() => Cliente)
+  @JoinColumn({ name: 'id_cliente', referencedColumnName: 'id' })
+  cliente: Cliente;
 }
