@@ -12,6 +12,7 @@ import { ProductosModule } from './ingredientes/ingredientes.module';
 import { InventariosSucursalesModule } from './inventarios_sucursales/inventarios_sucursales.module';
 import { MovimientosInventariosModule } from './movimientos_inventarios/movimientos_inventarios.module';
 import { RecetasModule } from './recetas/recetas.module';
+import { ClientesModule } from './clientes/clientes.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -35,6 +36,7 @@ import { RecetasModule } from './recetas/recetas.module';
     InventariosSucursalesModule,
     MovimientosInventariosModule,
     RecetasModule,
+    ClientesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

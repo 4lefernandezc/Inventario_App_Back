@@ -22,7 +22,7 @@ async function bootstrap() {
     .setTitle('API Inventario NOVA 2025')
     .setDescription('API Rest Sistema de Inventario NOVA 2025')
     .setVersion('1.0')
-    .addTag('Inventario')
+    .addTag('INVENTARIO NOVA 2025')
     .addBearerAuth({
       type: 'http',
       scheme: 'bearer',
