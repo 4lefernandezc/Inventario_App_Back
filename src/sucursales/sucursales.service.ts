@@ -9,12 +9,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Sucursal } from './entities/sucursal.entity';
 import { Repository } from 'typeorm';
 import { QuerySucursalDto } from './dto/query-sucursal.dto';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 @Injectable()
 export class SucursalesService {
   constructor(
     @InjectRepository(Sucursal)
     private sucursalesRepository: Repository<Sucursal>,
+    @InjectRepository(Usuario)
+    private usuariosRepository: Repository<Usuario>,
   ) {}
 
   async create(createSucursalDto: CreateSucursalDto): Promise<Sucursal> {
@@ -132,13 +135,13 @@ export class SucursalesService {
   }
 
   async remove(id: number): Promise<{ message: string; sucursal?: Sucursal }> {
-    const sucursal = await this.findOne(id);
+    const sucursal = await this.sucursalesRepository.findOne({ where: { id } });
   
-    const usuariosAsociados = await this.sucursalesRepository
-      .createQueryBuilder('sucursal')
-      .leftJoinAndSelect('sucursal.usuarios', 'usuario')
-      .where('sucursal.id = :id', { id })
-      .getCount();
+    if (!sucursal) {
+      throw new NotFoundException(`La sucursal con ID ${id} no existe.`);
+    }
+  
+    const usuariosAsociados = await this.usuariosRepository.count({ where: { sucursalId: id } });
   
     if (usuariosAsociados > 0) {
       throw new BadRequestException(
@@ -147,9 +150,10 @@ export class SucursalesService {
     }
   
     await this.sucursalesRepository.remove(sucursal);
+  
     return {
       message: 'La sucursal ha sido eliminada exitosamente',
       sucursal,
     };
-  }
+  }  
 }
