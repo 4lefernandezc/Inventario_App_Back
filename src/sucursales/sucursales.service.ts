@@ -84,7 +84,7 @@ export class SucursalesService {
       });
     }
 
-    if (activo) {
+    if (activo !== undefined) {
       query.andWhere('sucursales.activo = :activo', {
         activo: activo,
       });

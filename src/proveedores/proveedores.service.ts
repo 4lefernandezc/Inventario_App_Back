@@ -44,6 +44,21 @@ export class ProveedoresService {
     return this.proveedoresRepository.save(proveedor);
   }
 
+  async update(id: number, updateProveedorDto: UpdateProveedorDto): Promise<{ message: string; proveedor: Proveedor }> {
+    const proveedor = await this.findOne(id);
+    const proveedorUpdate = Object.assign(proveedor, updateProveedorDto);
+
+    if (updateProveedorDto.telefono) {
+      proveedorUpdate.linkWhatsapp = `https://wa.me/${updateProveedorDto.telefono.trim()}`;
+    }
+
+    const updatedProveedor = await this.proveedoresRepository.save(proveedorUpdate);
+    return {
+      message: 'El proveedor ha sido actualizado exitosamente',
+      proveedor: updatedProveedor,
+    };
+  }
+
   async findAll(q: QueryProveedorDto){
     const { page, limit, nombre, nit, telefono, direccion, correo, activo, sidx, sord } = q;
     const query = this.proveedoresRepository.createQueryBuilder('proveedores').select([
@@ -89,7 +104,7 @@ export class ProveedoresService {
       });
     }
 
-    if (activo) {
+    if (activo !== undefined) {
       query.andWhere('proveedores.activo = :activo', {
         activo: activo,
       });
@@ -118,16 +133,6 @@ export class ProveedoresService {
       throw new NotFoundException(`El proveedor con el id proporcionado no existe`);
     }
     return proveedor;
-  }
-
-  async update(id: number, updateProveedorDto: UpdateProveedorDto): Promise<{ message: string; proveedor: Proveedor }> {
-    const proveedor = await this.findOne(id);
-    const proveedorUpdate = Object.assign(proveedor, updateProveedorDto);
-    const updatedProveedor = await this.proveedoresRepository.save(proveedorUpdate);
-    return {
-      message: 'El proveedor ha sido actualizado exitosamente',
-      proveedor: updatedProveedor,
-    };
   }
 
   async remove(id: number): Promise<{ message: string; proveedor: Proveedor }> {

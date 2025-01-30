@@ -136,7 +136,7 @@ export class IngredientesService {
   async findOne(id: number): Promise<Ingrediente> {
     const ingrediente = await this.productosRepository.findOne({
       where: { id },
-      relations: ['categoria', 'proveedor'],
+      relations: ['proveedor'],
     });
     if (!ingrediente) {
       throw new NotFoundException(
